@@ -1,0 +1,182 @@
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: #f3f6fb !important;
+  color: #172543 !important;
+}
+
+.shell {
+  color: #172543;
+}
+
+.top {
+  color: #172543;
+}
+
+.side,
+.panel,
+.stat {
+  background: #fff !important;
+  border-color: #dce4ef !important;
+  color: #172543 !important;
+  box-shadow: 0 5px 18px rgb(24 47 88 / 6%);
+}
+
+.side {
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+.nav {
+  color: #52617b !important;
+}
+
+.nav.active,
+.nav:hover {
+  background: #edf3fc !important;
+  color: #18305a !important;
+}
+
+.welcome h1,
+.panel h2,
+.panel h3,
+.stat strong {
+  color: #172543;
+}
+
+.muted,
+small,
+.hint,
+.project p,
+.media code {
+  color: #64748b !important;
+}
+
+.field label,
+.check label {
+  color: #334155 !important;
+}
+
+input,
+textarea,
+select,
+.field input,
+.field textarea,
+.field select {
+  background: #fff !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline-color: #6588e8;
+}
+
+.btn {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #263750 !important;
+}
+
+.btn:hover {
+  background: #e7edf5 !important;
+}
+
+.btn.primary {
+  background: linear-gradient(110deg, #3988ff, #8053e8) !important;
+  color: #fff !important;
+}
+
+.btn.danger {
+  background: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #be123c !important;
+}
+
+.status {
+  color: #087f5b;
+}
+
+.status.error {
+  color: #b4233a;
+}
+
+.project,
+.media {
+  background: #fff !important;
+  border-color: #dce4ef !important;
+}
+
+.thumb,
+.media img,
+.media video {
+  background: #eef2f7 !important;
+}
+
+.tag {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #52617b !important;
+}
+
+.tag.ok {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+.tabs .tab {
+  background: #f8fafc !important;
+  border-color: #d2dbe8 !important;
+  color: #52617b !important;
+}
+
+.tabs .tab.active {
+  background: #eaf0fc !important;
+  border-color: #a9bce8 !important;
+  color: #234586 !important;
+}
+
+.empty {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #64748b !important;
+}
+
+.preview {
+  background: #fff !important;
+  border-color: #dce4ef !important;
+}
+
+a {
+  color: #315db7 !important;
+}
+
+@media (max-width: 760px) {
+  .side {
+    background: #fff;
+    flex-wrap: wrap;
+    overflow: visible;
+    gap: 6px;
+  }
+
+  .side .nav {
+    flex: 1 1 calc(50% - 6px);
+    text-align: center;
+    white-space: normal;
+  }
+
+  .side .nav.active,
+  .side .nav:hover {
+    background: #edf3fc !important;
+    color: #18305a !important;
+  }
+}

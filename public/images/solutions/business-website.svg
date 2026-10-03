@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="40" y1="26" x2="676" y2="416" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16234f"/>
+      <stop offset="1" stop-color="#25245e"/>
+    </linearGradient>
+    <linearGradient id="sunset" x1="428" y1="158" x2="591" y2="302" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffca9b"/>
+      <stop offset=".52" stop-color="#e88faa"/>
+      <stop offset="1" stop-color="#7568d8"/>
+    </linearGradient>
+    <linearGradient id="button" x1="98" y1="286" x2="195" y2="310" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4b83ff"/>
+      <stop offset="1" stop-color="#9655e9"/>
+    </linearGradient>
+    <filter id="shadow" x="35" y="21" width="650" height="383" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+  <rect width="720" height="420" rx="24" fill="url(#bg)"/>
+  <circle cx="611" cy="70" r="110" fill="#785fe8" fill-opacity=".13"/>
+  <circle cx="86" cy="382" r="126" fill="#36c8c5" fill-opacity=".08"/>
+  <rect x="61" y="49" width="600" height="328" rx="17" fill="#050a1e" fill-opacity=".46" filter="url(#shadow)"/>
+  <rect x="54" y="39" width="600" height="328" rx="16" fill="#f8faff"/>
+  <path d="M70 39h568a16 16 0 0 1 16 16v27H54V55a16 16 0 0 1 16-16Z" fill="#e9eef8"/>
+  <circle cx="77" cy="59" r="4" fill="#f08091"/>
+  <circle cx="91" cy="59" r="4" fill="#efbd74"/>
+  <circle cx="105" cy="59" r="4" fill="#58c9b8"/>
+  <rect x="139" y="52" width="296" height="14" rx="7" fill="#fff"/>
+  <rect x="466" y="54" width="51" height="9" rx="4.5" fill="#d8dfef"/>
+  <rect x="526" y="52" width="68" height="13" rx="6.5" fill="#3f6feb"/>
+  <rect x="54" y="82" width="600" height="285" rx="0" fill="#fff"/>
+  <path d="M54 98a16 16 0 0 1 16-16h568v44H54V98Z" fill="#fff"/>
+  <circle cx="82" cy="104" r="12" fill="#4669d7"/>
+  <path d="M77 104h10m-5-5v10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  <rect x="105" y="100" width="60" height="8" rx="4" fill="#1b2a54"/>
+  <rect x="410" y="101" width="34" height="6" rx="3" fill="#b6bfd3"/>
+  <rect x="456" y="101" width="38" height="6" rx="3" fill="#b6bfd3"/>
+  <rect x="505" y="97" width="71" height="16" rx="8" fill="#eff2fa"/>
+  <rect x="584" y="97" width="49" height="16" rx="8" fill="#eef1f9"/>
+  <text x="82" y="163" fill="#17264e" font-family="Arial, sans-serif" font-size="22" font-weight="700">Your business, online.</text>
+  <rect x="82" y="177" width="250" height="27" rx="5" fill="#16234e"/>
+  <text x="94" y="195" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="700">Make a strong first impression</text>
+  <text x="82" y="223" fill="#596984" font-family="Arial, sans-serif" font-size="13">A clear home for your brand and services.</text>
+  <text x="82" y="242" fill="#596984" font-family="Arial, sans-serif" font-size="13">Designed to help customers take the next step.</text>
+  <rect x="82" y="269" width="107" height="33" rx="9" fill="url(#button)"/>
+  <text x="96" y="290" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="700">Explore services</text>
+  <text x="82" y="326" fill="#61708b" font-family="Arial, sans-serif" font-size="10">Mobile-ready</text>
+  <text x="151" y="326" fill="#61708b" font-family="Arial, sans-serif" font-size="10">Easy to use</text>
+  <text x="228" y="326" fill="#61708b" font-family="Arial, sans-serif" font-size="10">Built to grow</text>
+  <rect x="378" y="143" width="235" height="169" rx="13" fill="url(#sunset)"/>
+  <circle cx="552" cy="187" r="49" fill="#fff2c4" fill-opacity=".72"/>
+  <path d="m382 280 55-52 38 31 42-42 93 95H382v-32Z" fill="#5e6bb2" fill-opacity=".75"/>
+  <path d="m379 290 67-42 43 28 49-34 77 70H379v-22Z" fill="#25396e" fill-opacity=".8"/>
+  <rect x="390" y="320" width="115" height="8" rx="4" fill="#dce3ef"/>
+  <rect x="390" y="335" width="76" height="6" rx="3" fill="#e7ebf3"/>
+  <rect x="515" y="320" width="94" height="25" rx="8" fill="#eff3fa"/>
+  <rect x="532" y="329" width="61" height="7" rx="3.5" fill="#96a5c3"/>
+  <rect x="583" y="246" width="93" height="151" rx="17" fill="#111e46" stroke="#e5ebfa" stroke-width="5"/>
+  <rect x="591" y="259" width="77" height="125" rx="10" fill="#f9fbff"/>
+  <rect x="600" y="273" width="58" height="40" rx="6" fill="url(#sunset)"/>
+  <text x="600" y="326" fill="#182750" font-family="Arial, sans-serif" font-size="8" font-weight="700">Find a service</text>
+  <text x="600" y="340" fill="#62718d" font-family="Arial, sans-serif" font-size="7">Learn more</text>
+  <text x="600" y="352" fill="#62718d" font-family="Arial, sans-serif" font-size="7">Get in touch</text>
+  <circle cx="629" cy="374" r="3" fill="#9ca9c5"/>
+</svg>

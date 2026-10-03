@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="48" y1="32" x2="666" y2="406" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#12224d"/>
+      <stop offset="1" stop-color="#20245c"/>
+    </linearGradient>
+    <linearGradient id="line" x1="180" y1="308" x2="581" y2="213" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#48ded0"/>
+      <stop offset="1" stop-color="#788aff"/>
+    </linearGradient>
+    <filter id="shadow" x="37" y="19" width="650" height="384" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+  <rect width="720" height="420" rx="24" fill="url(#bg)"/>
+  <circle cx="630" cy="67" r="118" fill="#8a62e9" fill-opacity=".1"/>
+  <circle cx="114" cy="402" r="125" fill="#36c9d3" fill-opacity=".07"/>
+  <rect x="59" y="47" width="603" height="326" rx="17" fill="#050a1e" fill-opacity=".48" filter="url(#shadow)"/>
+  <rect x="52" y="37" width="603" height="326" rx="16" fill="#f7f9fd"/>
+  <path d="M68 37h571a16 16 0 0 1 16 16v30H52V53a16 16 0 0 1 16-16Z" fill="#e9eef8"/>
+  <circle cx="76" cy="58" r="4" fill="#f08091"/>
+  <circle cx="90" cy="58" r="4" fill="#efbd74"/>
+  <circle cx="104" cy="58" r="4" fill="#58c9b8"/>
+  <rect x="137" y="51" width="231" height="14" rx="7" fill="#fff"/>
+  <rect x="561" y="50" width="66" height="17" rx="8.5" fill="#dbe3f0"/>
+  <text x="568" y="62" fill="#52617b" font-family="Arial, sans-serif" font-size="9" font-weight="700">SAMPLE DATA</text>
+  <rect x="52" y="83" width="101" height="280" fill="#111d42"/>
+  <circle cx="76" cy="108" r="11" fill="#4e72e8"/>
+  <path d="m72 108 3 3 6-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="96" y="104" width="41" height="7" rx="3.5" fill="#e4eaff" fill-opacity=".8"/>
+  <rect x="69" y="142" width="67" height="26" rx="7" fill="#293766"/>
+  <rect x="78" y="152" width="8" height="7" rx="2" fill="#55d7cf"/>
+  <rect x="93" y="153" width="31" height="5" rx="2.5" fill="#e3e9fa"/>
+  <rect x="77" y="184" width="9" height="8" rx="2" fill="#8491b1"/>
+  <rect x="94" y="185" width="33" height="5" rx="2.5" fill="#8491b1"/>
+  <rect x="77" y="211" width="9" height="8" rx="2" fill="#8491b1"/>
+  <rect x="94" y="212" width="28" height="5" rx="2.5" fill="#8491b1"/>
+  <rect x="77" y="238" width="9" height="8" rx="2" fill="#8491b1"/>
+  <rect x="94" y="239" width="37" height="5" rx="2.5" fill="#8491b1"/>
+  <text x="171" y="117" fill="#17254b" font-family="Arial, sans-serif" font-size="24" font-weight="700">Operations overview</text>
+  <text x="171" y="135" fill="#74819a" font-family="Arial, sans-serif" font-size="14">Your team's work at a glance</text>
+  <rect x="551" y="101" width="75" height="25" rx="8" fill="#436df0"/>
+  <rect x="568" y="110" width="42" height="7" rx="3.5" fill="#fff"/>
+  <rect x="171" y="151" width="138" height="65" rx="10" fill="#fff" stroke="#e1e7f1"/>
+  <text x="185" y="171" fill="#68758d" font-family="Arial, sans-serif" font-size="14">Open orders</text>
+  <text x="185" y="197" fill="#18264c" font-family="Arial, sans-serif" font-size="22" font-weight="700">124</text>
+  <circle cx="286" cy="180" r="10" fill="#e3f8f4"/>
+  <path d="m281 180 4 4 7-8" stroke="#11ad9c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="322" y="151" width="138" height="65" rx="10" fill="#fff" stroke="#e1e7f1"/>
+  <text x="336" y="171" fill="#68758d" font-family="Arial, sans-serif" font-size="14">Revenue</text>
+  <text x="336" y="197" fill="#18264c" font-family="Arial, sans-serif" font-size="22" font-weight="700">$38.4k</text>
+  <circle cx="437" cy="180" r="10" fill="#edf0ff"/>
+  <path d="M433 180h8m-4-4v8" stroke="#5473ed" stroke-width="2" stroke-linecap="round"/>
+  <rect x="473" y="151" width="153" height="65" rx="10" fill="#fff" stroke="#e1e7f1"/>
+  <text x="487" y="171" fill="#68758d" font-family="Arial, sans-serif" font-size="14">On-time</text>
+  <text x="487" y="197" fill="#18264c" font-family="Arial, sans-serif" font-size="22" font-weight="700">96%</text>
+  <rect x="583" y="174" width="27" height="20" rx="5" fill="#fff0e7"/>
+  <path d="M589 189v-5m7 5v-9m7 9v-13" stroke="#ef8d65" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="171" y="232" width="281" height="112" rx="10" fill="#fff" stroke="#e1e7f1"/>
+  <text x="186" y="257" fill="#27365a" font-family="Arial, sans-serif" font-size="17" font-weight="700">Weekly performance</text>
+  <rect x="381" y="246" width="54" height="7" rx="3.5" fill="#c0c9d9"/>
+  <path d="M192 319h238" stroke="#e9edf5" stroke-width="1"/>
+  <path d="m192 303 34-17 29 8 37-25 31 12 35-26 31 7 37-17" stroke="url(#line)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M192 319v-16m34 16v-33m29 33v-25m37 25v-50m31 50v-38m35 38v-64m31 64v-57m37 57v-74" stroke="#e6eaf4" stroke-width="1"/>
+  <rect x="466" y="232" width="160" height="112" rx="10" fill="#fff" stroke="#e1e7f1"/>
+  <text x="481" y="257" fill="#27365a" font-family="Arial, sans-serif" font-size="16" font-weight="700">Recent activity</text>
+  <circle cx="492" cy="276" r="7" fill="#dcf6f1"/>
+  <path d="m489 276 2 2 4-5" stroke="#10a998" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="505" y="280" fill="#53627b" font-family="Arial, sans-serif" font-size="12">Order shipped</text>
+  <circle cx="492" cy="296" r="7" fill="#e7edff"/>
+  <path d="M490 296h4m-2-2v4" stroke="#6079e2" stroke-width="1.3" stroke-linecap="round"/>
+  <text x="505" y="300" fill="#53627b" font-family="Arial, sans-serif" font-size="12">Payment received</text>
+  <circle cx="492" cy="316" r="7" fill="#fff0e7"/>
+  <path d="M489 316h6" stroke="#e98b66" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="505" y="320" fill="#53627b" font-family="Arial, sans-serif" font-size="12">Task assigned</text>
+</svg>
