@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="42" y1="34" x2="679" y2="398" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14224d"/>
+      <stop offset="1" stop-color="#25245f"/>
+    </linearGradient>
+    <linearGradient id="ai" x1="300" y1="135" x2="423" y2="264" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#68d8db"/>
+      <stop offset=".52" stop-color="#7585ff"/>
+      <stop offset="1" stop-color="#bd67e8"/>
+    </linearGradient>
+    <linearGradient id="path" x1="102" y1="209" x2="632" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#55d8d0"/>
+      <stop offset=".55" stop-color="#7e8aff"/>
+      <stop offset="1" stop-color="#f08ab5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="420" rx="24" fill="url(#bg)"/>
+  <circle cx="360" cy="208" r="163" fill="#755de0" fill-opacity=".08"/>
+  <circle cx="360" cy="208" r="124" stroke="#a2acff" stroke-opacity=".11" stroke-width="1.5"/>
+  <circle cx="360" cy="208" r="91" stroke="#a2acff" stroke-opacity=".12" stroke-width="1.5" stroke-dasharray="4 8"/>
+  <path d="M116 208h121m245 0h122M359 112v34m0 125v36M223 139l42 38m190 62 42 38M497 139l-42 38m-190 62-42 38" stroke="url(#path)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M115 208h116m257 0h116" stroke="#fff" stroke-opacity=".07" stroke-width="9" stroke-linecap="round"/>
+  <rect x="37" y="164" width="104" height="88" rx="16" fill="#f7f9ff"/>
+  <rect x="52" y="180" width="30" height="30" rx="9" fill="#e6f8f6"/>
+  <path d="M61 188v14m12-14v14m-11-10h10" stroke="#19ab9e" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="52" y="224" fill="#24345e" font-family="Arial, sans-serif" font-size="15" font-weight="700">New order</text>
+  <text x="52" y="239" fill="#64728a" font-family="Arial, sans-serif" font-size="13">Form received</text>
+  <rect x="579" y="164" width="104" height="88" rx="16" fill="#f7f9ff"/>
+  <rect x="594" y="180" width="30" height="30" rx="9" fill="#fff1e8"/>
+  <path d="M601 195h16m-12-5-5 5 5 5m8-10 5 5-5 5" stroke="#e98b64" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="594" y="224" fill="#24345e" font-family="Arial, sans-serif" font-size="14" font-weight="700">Update tools</text>
+  <text x="594" y="239" fill="#64728a" font-family="Arial, sans-serif" font-size="13">Workflow done</text>
+  <rect x="172" y="75" width="112" height="72" rx="14" fill="#f7f9ff"/>
+  <circle cx="195" cy="99" r="9" fill="#e8ecff"/>
+  <path d="M192 99h6m-3-3v6" stroke="#697be4" stroke-width="1.8" stroke-linecap="round"/>
+  <text x="211" y="102" fill="#29385e" font-family="Arial, sans-serif" font-size="14" font-weight="700">CRM trigger</text>
+  <text x="190" y="132" fill="#64728a" font-family="Arial, sans-serif" font-size="12">Order received</text>
+  <rect x="172" y="269" width="112" height="72" rx="14" fill="#f7f9ff"/>
+  <circle cx="195" cy="293" r="9" fill="#e7f7f1"/>
+  <path d="m191 293 3 3 5-6" stroke="#14aa94" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="211" y="296" fill="#29385e" font-family="Arial, sans-serif" font-size="14" font-weight="700">Human review</text>
+  <text x="190" y="326" fill="#64728a" font-family="Arial, sans-serif" font-size="12">Approve request</text>
+  <rect x="436" y="75" width="112" height="72" rx="14" fill="#f7f9ff"/>
+  <circle cx="459" cy="99" r="9" fill="#fff0e8"/>
+  <path d="M456 99h6m-3-3v6" stroke="#e78a62" stroke-width="1.8" stroke-linecap="round"/>
+  <text x="475" y="102" fill="#29385e" font-family="Arial, sans-serif" font-size="14" font-weight="700">AI review</text>
+  <text x="454" y="132" fill="#64728a" font-family="Arial, sans-serif" font-size="12">Classify request</text>
+  <rect x="436" y="269" width="112" height="72" rx="14" fill="#f7f9ff"/>
+  <circle cx="459" cy="293" r="9" fill="#f3eaff"/>
+  <path d="m455 293 3 3 5-6" stroke="#a156d7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="475" y="296" fill="#29385e" font-family="Arial, sans-serif" font-size="14" font-weight="700">Automation</text>
+  <text x="454" y="326" fill="#64728a" font-family="Arial, sans-serif" font-size="12">Update records</text>
+  <circle cx="360" cy="208" r="70" fill="#7a67e9" fill-opacity=".16"/>
+  <circle cx="360" cy="208" r="59" fill="url(#ai)" stroke="#d8e2ff" stroke-opacity=".75" stroke-width="2"/>
+  <path d="M360 171v8m0 58v8m37-37h-8m-58 0h-8m63.2-26.2-5.7 5.7m-41 41-5.7 5.7m52.4 0-5.7-5.7m-41-41-5.7-5.7" stroke="#fff" stroke-opacity=".8" stroke-width="2" stroke-linecap="round"/>
+  <path d="m360 181 8 18 19 9-19 8-8 19-8-19-19-8 19-9 8-18Z" fill="#fff"/>
+  <text x="360" y="251" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="16" font-weight="700">AI</text>
+  <circle cx="116" cy="208" r="5" fill="#64e0d5"/>
+  <circle cx="604" cy="208" r="5" fill="#f28bb7"/>
+  <circle cx="228" cy="144" r="4" fill="#8ea0ff"/>
+  <circle cx="492" cy="272" r="4" fill="#e6a0e3"/>
+</svg>

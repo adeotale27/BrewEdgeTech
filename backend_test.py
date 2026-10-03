@@ -5,7 +5,6 @@ Tests all endpoints as specified in the review request.
 """
 
 import requests
-import json
 import io
 import os
 from datetime import datetime, timedelta

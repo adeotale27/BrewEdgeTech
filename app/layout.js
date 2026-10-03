@@ -2,8 +2,8 @@ import './globals.css'
 import { Providers } from './providers'
 
 export const metadata = {
-  title: 'Next.js MongoDB Template',
-  description: 'A simple template with App Router, MongoDB, and shadcn/ui',
+  title: 'Brew EdgeTech | You Imagine. We Create.',
+  description: 'Brew EdgeTech marketing website and admin studio.',
 }
 
 export default function RootLayout({ children }) {

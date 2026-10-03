@@ -16,7 +16,7 @@ This is a **portable, production-ready** rebuild of the original site. It has **
 | API | Single Next.js catch-all route (`/app/api/[[...path]]/route.js`), REST, `/api/*` prefix |
 | Auth | Server-side **HMAC-signed httpOnly session cookie**, credentials from env vars |
 | Public site & admin | Preserved original HTML/CSS/vanilla-JS, served via Next rewrites (`/public/site.html`, `/public/admin/index.html`) |
-| Styling | Original hand-crafted CSS (dark theme + light toggle); Tailwind + shadcn/ui available |
+| Styling | Original hand-crafted CSS (dark theme + light toggle); Tailwind CSS for the Next.js shell |
 
 ---
 
