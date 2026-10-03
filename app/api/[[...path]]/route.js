@@ -20,20 +20,45 @@ async function connectToMongo() {
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                           */
 /* ------------------------------------------------------------------ */
-function handleCORS(response) {
-  response.headers.set('Access-Control-Allow-Origin', process.env.CORS_ORIGINS || '*')
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  response.headers.set('Access-Control-Allow-Credentials', 'true')
+function allowedOrigins() {
+  const configured = process.env.CORS_ORIGINS || 'https://brewedgetech.com,https://www.brewedgetech.com'
+  const origins = configured.split(',').map((origin) => origin.trim()).filter(Boolean)
+
+  if (origins.includes('*')) {
+    throw new Error('CORS_ORIGINS must contain explicit origins; wildcard origins cannot be used with credentials.')
+  }
+
+  for (const origin of origins) {
+    let parsed
+    try { parsed = new URL(origin) } catch {
+      throw new Error(`Invalid origin in CORS_ORIGINS: ${origin}`)
+    }
+    if (!['http:', 'https:'].includes(parsed.protocol) || parsed.origin !== origin) {
+      throw new Error(`CORS_ORIGINS entries must be bare HTTP(S) origins: ${origin}`)
+    }
+  }
+
+  return new Set(origins)
+}
+
+function handleCORS(response, request) {
+  const origin = request.headers.get('origin')
+  if (origin) response.headers.append('Vary', 'Origin')
+  if (origin && allowedOrigins().has(origin)) {
+    response.headers.set('Access-Control-Allow-Origin', origin)
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    response.headers.set('Access-Control-Allow-Credentials', 'true')
+  }
   return response
 }
 
 function json(data, status = 200) {
-  return handleCORS(NextResponse.json(data, { status }))
+  return NextResponse.json(data, { status })
 }
 
 function fail(code, message, status = 400) {
-  return handleCORS(NextResponse.json({ success: false, error: { code, message } }, { status }))
+  return NextResponse.json({ success: false, error: { code, message } }, { status })
 }
 
 async function readBody(request) {
@@ -107,13 +132,26 @@ function setSessionCookie(response, username) {
 /* ------------------------------------------------------------------ */
 /*  Light brute-force protection on login                             */
 /* ------------------------------------------------------------------ */
-const loginAttempts = new Map() // ip -> { count, first }
-function rateLimited(ip) {
+const loginAttempts = new Map()
+function loginRateLimitKey(request) {
+  const accountKey = 'admin-account'
+  const trustedHeader = process.env.TRUSTED_CLIENT_IP_HEADER?.trim()
+  if (!trustedHeader) return accountKey
+
+  const clientIp = request.headers.get(trustedHeader)?.trim()
+  if (!clientIp || clientIp.includes(',') || clientIp.length > 64) return accountKey
+  return `trusted-ip:${clientIp}`
+}
+function rateLimited(key) {
   const now = Date.now()
-  const rec = loginAttempts.get(ip) || { count: 0, first: now }
+  const rec = loginAttempts.get(key) || { count: 0, first: now }
   if (now - rec.first > 15 * 60 * 1000) { rec.count = 0; rec.first = now }
   rec.count++
-  loginAttempts.set(ip, rec)
+  loginAttempts.set(key, rec)
+  if (loginAttempts.size > 10000) {
+    const oldestKey = loginAttempts.keys().next().value
+    if (oldestKey) loginAttempts.delete(oldestKey)
+  }
   return rec.count > 10
 }
 
@@ -291,7 +329,7 @@ async function handleRoute(request, { params }) {
           'Content-Length': String(buf.length),
         },
       })
-      return handleCORS(res)
+      return res
     }
 
     /* ---------------- Admin auth ---------------- */
@@ -303,16 +341,16 @@ async function handleRoute(request, { params }) {
         if (!USERNAME() || !PASSWORD() || !SECRET()) {
           return fail('NOT_CONFIGURED', 'Admin credentials are not configured on the server.', 503)
         }
-        const ip = request.headers.get('x-forwarded-for') || 'local'
-        if (rateLimited(ip)) return fail('RATE_LIMITED', 'Too many attempts. Please try again later.', 429)
         const b = await readBody(request)
         const u = str(b.username, 160)
         const p = str(b.password, 200)
+        const rateLimitKey = loginRateLimitKey(request)
+        if (rateLimited(rateLimitKey)) return fail('RATE_LIMITED', 'Too many attempts. Please try again later.', 429)
         if (u !== USERNAME() || p !== PASSWORD()) {
           await writeAudit(db, 'login_failed', 'auth', null, { username: u })
           return fail('INVALID_CREDENTIALS', 'Invalid username or password.', 401)
         }
-        loginAttempts.delete(ip)
+        loginAttempts.delete(rateLimitKey)
         await writeAudit(db, 'login', 'auth', null, {})
         const res = json({ ok: true, username: u })
         return await setSessionCookie(res, u)
@@ -641,11 +679,15 @@ async function handleRoute(request, { params }) {
   }
 }
 
-export async function OPTIONS() {
-  return handleCORS(new NextResponse(null, { status: 200 }))
+async function withCORS(request, context) {
+  return handleCORS(await handleRoute(request, context), request)
 }
-export const GET = handleRoute
-export const POST = handleRoute
-export const PUT = handleRoute
-export const DELETE = handleRoute
-export const PATCH = handleRoute
+
+export async function OPTIONS(request) {
+  return handleCORS(new NextResponse(null, { status: 204 }), request)
+}
+export const GET = withCORS
+export const POST = withCORS
+export const PUT = withCORS
+export const DELETE = withCORS
+export const PATCH = withCORS

@@ -1,144 +1,108 @@
-# Brew EdgeTech — Website & Admin CMS
+# Brew EdgeTech
 
-> **You Imagine. We Create.** — the Brew EdgeTech marketing website plus a secure, database-driven content/admin studio.
+Brew EdgeTech is a Next.js 15 application that serves the marketing website, static service pages, admin CMS, and REST API from one Node.js service. MongoDB stores the CMS content, portfolio, media, enquiries, analytics, revisions, schedules, and audit data.
 
-This is a **portable, production-ready** rebuild of the original site. It has **no dependency on Emergent/Hatchable** and can be cloned, run locally, and deployed to Vercel, Netlify, AWS, or any Node host.
+## Requirements
 
----
+- Node.js 20.6 or newer (the seed command uses Node's `--env-file` option)
+- Corepack/Yarn (the version is specified in `package.json`)
+- MongoDB Community Server locally, or a MongoDB Atlas cluster
 
-## Tech stack
+## Run locally
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | **Next.js 15** (App Router) |
-| Language | JavaScript / React 18 |
-| Database | **MongoDB** (driver `mongodb`) |
-| API | Single Next.js catch-all route (`/app/api/[[...path]]/route.js`), REST, `/api/*` prefix |
-| Auth | Server-side **HMAC-signed httpOnly session cookie**, credentials from env vars |
-| Public site & admin | Preserved original HTML/CSS/vanilla-JS, served via Next rewrites (`/public/site.html`, `/public/admin/index.html`) |
-| Styling | Original hand-crafted CSS (dark theme + light toggle); Tailwind + shadcn/ui available |
+1. Install dependencies:
 
----
+   ```bash
+   corepack yarn install
+   ```
 
-## Quick start (local)
+2. Create your local environment file and edit it:
 
-```bash
-git clone <repository>
-cd <repository>
-cp .env.example .env        # then edit values
-npm install                 # or: yarn
-# make sure MongoDB is running and MONGO_URL points to it
-npm run dev                 # http://localhost:3000
-```
+   ```bash
+   cp .env.example .env
+   ```
 
-- Public site: `http://localhost:3000/`
-- Admin studio: `http://localhost:3000/admin`
-- Health check: `http://localhost:3000/api/health`
+   Set `MONGO_URL` to your local MongoDB connection string or Atlas URI. Set a private admin username/password and generate a session secret:
 
-Optional: seed the "Our Work" demo library:
+   ```bash
+   openssl rand -hex 32
+   ```
 
-```bash
-node scripts/seed.js
-```
+   Put the generated value in `ADMIN_SESSION_SECRET`. Do not use the example credentials outside a disposable local setup. `.env` is ignored by Git.
 
----
+3. Start MongoDB if it is installed locally, then start Next.js:
+
+   ```bash
+   yarn dev
+   ```
+
+4. Open:
+
+   - Website: <http://localhost:3000>
+   - Admin CMS: <http://localhost:3000/admin>
+   - API health: <http://localhost:3000/api/health>
+
+The database is created by MongoDB on first write. To load the example demo-library content, run `yarn seed` in a second terminal after configuring `.env`.
 
 ## Environment variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `MONGO_URL` | ✅ | MongoDB connection string (local or Atlas) |
-| `DB_NAME` | ✅ | Database name (e.g. `brew_edgetech`) |
-| `NEXT_PUBLIC_SITE_URL` / `NEXT_PUBLIC_BASE_URL` | ✅ | Public base URL (used by the SEO audit & canonical references) |
-| `CORS_ORIGINS` | – | Allowed origins, comma separated or `*` |
-| `ADMIN_USERNAME` | ✅ | Admin login username |
-| `ADMIN_PASSWORD` | ✅ | Admin login password |
-| `ADMIN_SESSION_SECRET` | ✅ | Long random string for signing sessions (`openssl rand -hex 32`) |
+| Variable | Required | Purpose |
+|---|---:|---|
+| `MONGO_URL` | Yes | MongoDB connection URI. Use a database user restricted to this app's database. |
+| `DB_NAME` | No | MongoDB database name; defaults to `brew_edgetech`. |
+| `NEXT_PUBLIC_BASE_URL` | For SEO audit | Canonical site origin used by the admin SEO audit, e.g. `https://brewedgetech.com`. Despite the Next.js prefix, this value is not a secret. |
+| `CORS_ORIGINS` | No | Comma-separated exact origins permitted to make cross-origin API calls. Production defaults to the apex and `www` domain. |
+| `ADMIN_USERNAME` | Yes for admin | Admin login name. |
+| `ADMIN_PASSWORD` | Yes for admin | Admin login password. Use a unique, strong password. |
+| `ADMIN_SESSION_SECRET` | Yes for admin | Random secret used to sign the eight-hour admin session cookie. Generate with `openssl rand -hex 32`. |
+| `TRUSTED_CLIENT_IP_HEADER` | No | Optional header name for the client IP, only when a trusted reverse proxy overwrites it. Without it, failed-login throttling is scoped to the admin account; the API never trusts caller-supplied `X-Forwarded-For` by default. |
+| `PORT` | No | Port for `yarn start`; Next.js defaults to `3000`. |
 
-Never commit `.env`. See `.env.example` for a template.
+Copy `.env.example` to `.env` for development. In production, configure each variable through the hosting provider's secret/environment-variable settings. Never commit `.env`, production credentials, or MongoDB connection strings.
 
----
+`CORS_ORIGINS` entries must be bare origins (scheme + host + optional port), without a path or trailing slash. Include both `https://brewedgetech.com` and `https://www.brewedgetech.com` if both website hostnames are served. CORS is an origin allowlist, not an access-control substitute: admin endpoints still require the signed session. Do not set `CORS_ORIGINS=*`; wildcard origins cannot safely be combined with credentialed requests.
 
-## Admin
+The application permits same-origin framing only. The admin's embedded website preview remains available, while third-party sites cannot frame the CMS. If configuring `TRUSTED_CLIENT_IP_HEADER`, verify the reverse proxy strips any client-provided value and writes its own value before forwarding requests.
 
-1. Set `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` in `.env`.
-2. Visit `/admin` → sign in. Sessions are HMAC-signed, httpOnly, and expire after 8 hours.
-3. The admin is never auto-authenticated; the dashboard is hidden until login succeeds, and every `/api/admin/*` endpoint rejects unauthenticated requests (`401`).
+## Application overview
 
-The studio manages: page content (homepage/services/pricing/mobile/demo library/FAQ/footer/SEO), portfolio/case studies, media library, enquiries CRM, website settings, SEO audit, revisions & restore, scheduled publishing, audit log, analytics, and an **application error-log viewer**.
+- Runtime packages are limited to Next.js, React, MongoDB, and UUID generation; the unused shadcn/Radix component scaffold has been removed.
+- `app/api/[[...path]]/route.js` implements the MongoDB connection, HMAC-signed httpOnly admin cookie, and `/api/*` REST endpoints.
+- `public/site.html` is the main marketing site; `public/services/*/index.html` are the service landing pages.
+- `public/admin/index.html` is the CMS at `/admin`.
+- `next.config.js` maps the public routes and applies response security headers.
+- MongoDB collections are created as needed, including `site_content`, `portfolio`, `media`, `leads`, `engagement`, `error_logs`, `revisions`, `schedules`, and `audit`.
 
-### Content workflow
-`Draft (PUT) → Publish (POST) → public /api/site-content`. Every save writes a revision; revisions can be restored.
+Public API endpoints include `GET /api/health`, `POST /api/leads`, `GET /api/site-content`, `GET /api/portfolio`, `POST /api/engagement`, and `POST /api/error-log`. Admin APIs are under `/api/admin/*` and require login; `GET|POST|DELETE /api/admin-auth` manages the session. Lead submissions are stored in MongoDB; outbound email notifications are not configured.
 
----
-
-## Data model (MongoDB collections)
-
-`site_content`, `portfolio`, `media`, `leads`, `engagement`, `error_logs`, `revisions`, `schedules`, `audit`.
-All documents use UUID string ids (no exposed Mongo `_id`).
-
----
-
-## API overview (prefix `/api`)
-
-**Public:** `GET /health`, `POST /leads`, `GET /site-content`, `GET /portfolio`, `POST /engagement`, `POST /error-log`, `GET /media/:id`
-**Auth:** `GET|POST|DELETE /admin-auth`
-**Admin (auth required):** `/admin/content`, `/admin/portfolio`, `/admin/media`, `/admin/leads`, `/admin/error-logs`, `/admin/revisions`, `/admin/schedule`, `/admin/audit`, `/admin/seo-audit`, `/engagement/summary`
-
-Errors return `{ "success": false, "error": { "code", "message" } }` and never leak stack traces.
-
----
-
-## Production build
+## Build and run for production
 
 ```bash
-npm run build
-npm run start
+yarn build
+NODE_ENV=production yarn start
 ```
 
-### Deploy to Vercel
-1. Push the repo to GitHub and import it in Vercel.
-2. Add all environment variables from the table above.
-3. Use a hosted MongoDB (e.g. MongoDB Atlas) for `MONGO_URL`.
-4. Deploy. Rewrites, API routes, and static assets work out of the box.
+The server listens on `PORT` (default `3000`). Keep the Node process running under a process manager or the hosting platform, and expose it through HTTPS using a reverse proxy or the platform's edge proxy. The project uses Next.js standalone output, but standard `next start` also works.
 
-### Deploy to a generic Node server
+### Connect `brewedgetech.com` to a Node server
+
+1. Deploy the application to a Node-capable host and configure all production environment variables there. Use MongoDB Atlas or another managed MongoDB service for a remotely hosted app; allow network access only from the app host where possible.
+2. Configure the app to listen on its assigned port (normally `3000`) and verify `https://<temporary-host>/api/health` reports `"status":"ok"`.
+3. At your DNS provider, point `brewedgetech.com` to the host using the record type and target supplied by that host (commonly an `A` record for a VPS or an `ALIAS`/`ANAME` for a managed platform). Point `www.brewedgetech.com` to the host with a `CNAME` if you want to serve both names.
+4. Add both domain names in the host's domain settings and issue/enable TLS certificates. Configure the host to redirect one hostname to your preferred canonical hostname if desired.
+5. Set `NEXT_PUBLIC_BASE_URL=https://brewedgetech.com` and `CORS_ORIGINS=https://brewedgetech.com,https://www.brewedgetech.com` in the production environment, then redeploy/restart.
+6. Check `/`, `/admin`, `/api/health`, and each service page over HTTPS. Test the admin sign-in and a public enquiry. Keep `/admin` protected by its configured credentials and consider adding host-level access restrictions as an additional layer.
+
+DNS records, TLS, and domain attachment must be completed with the DNS provider and hosting account; they cannot be activated from this repository alone.
+
+### Vercel or another managed Next.js host
+
+Import the repository, configure the production environment variables, attach the domain names in the host dashboard, and follow its DNS/TLS instructions. Configure MongoDB network access for the host's outbound connections. Redeploy after changing environment variables. The application API and static site are served from the same deployment.
+
+## Checks
+
+There is no automated test script configured. `backend_test.py` is an optional integration test against `NEXT_PUBLIC_BASE_URL`; set `ADMIN_USERNAME` and `ADMIN_PASSWORD` in the environment before running it if you intend to exercise admin endpoints. It performs writes, so only point it at a disposable/test database.
+
 ```bash
-npm install && npm run build
-NODE_ENV=production npm run start   # serves on PORT (default 3000)
-```
-Run behind a reverse proxy (Nginx) with TLS. Set `NODE_ENV=production` so session cookies are `Secure`.
-
----
-
-## Security
-
-- httpOnly, signed session cookies; server-side authorization on every admin route.
-- Login brute-force throttling; secure credential comparison.
-- Security headers (CSP frame-ancestors, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy).
-- Media uploads validated by MIME allowlist and 8 MB size limit.
-- No secrets in source; all config via environment variables.
-
----
-
-## SEO
-
-Per-page titles/descriptions, canonical URLs, Open Graph/Twitter metadata, JSON-LD (Organization, WebSite, Service, BreadcrumbList), `robots.txt`, `sitemap.xml`, semantic headings, and a built-in technical SEO audit in the admin.
-
----
-
-## Project structure
-
-```
-app/
-  api/[[...path]]/route.js   # all backend APIs (MongoDB)
-  layout.js  page.js         # app shell + / fallback redirect
-public/
-  site.html                  # public marketing site (served at /)
-  admin/index.html           # admin studio (served at /admin)
-  services/*/index.html      # service landing pages
-  favicon.svg  logo.svg  robots.txt  sitemap.xml
-scripts/seed.js              # optional demo-library seed
-next.config.js               # rewrites + security headers
-.env.example                 # environment template
+yarn build
 ```

@@ -11,12 +11,12 @@ import os
 from datetime import datetime, timedelta
 
 # Base URL from environment
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://brew-edge-rebuild.preview.emergentagent.com')
+BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
 API_BASE = f"{BASE_URL}/api"
 
 # Admin credentials
-ADMIN_USERNAME = "Adeotale"
-ADMIN_PASSWORD = "Adeotale@1234"
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', '')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', '')
 
 # Test results tracking
 test_results = {
