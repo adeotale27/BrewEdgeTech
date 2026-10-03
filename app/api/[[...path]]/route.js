@@ -561,6 +561,25 @@ async function handleRoute(request, { params }) {
         return json({ events: events.map(clean) })
       }
 
+      /* --------- version control (admin-only) --------- */
+      if (route === '/admin/versions') {
+        if (method === 'GET') {
+          const versions = await db.collection('versions').find({}).sort({ released_at: -1 }).toArray()
+          return json({ versions: versions.map(clean), current: versions[0]?.version || null })
+        }
+        if (method === 'POST') {
+          const b = await readBody(request)
+          const version = str(b.version, 20)
+          const title = str(b.title, 160)
+          if (!version) return fail('VALIDATION_ERROR', 'Version number is required.', 400)
+          const notes = Array.isArray(b.notes) ? b.notes.map((n) => str(n, 400)).filter(Boolean) : []
+          const doc = { id: uuidv4(), version, title, notes, released_at: b.released_at || new Date().toISOString() }
+          await db.collection('versions').insertOne(doc)
+          await writeAudit(db, 'release', 'version', version, { title })
+          return json({ ok: true, id: doc.id })
+        }
+      }
+
       /* --------- SEO audit --------- */
       if (route === '/admin/seo-audit' && method === 'GET') {
         const base = (process.env.NEXT_PUBLIC_BASE_URL || '').replace(/\/$/, '')
