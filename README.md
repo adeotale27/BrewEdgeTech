@@ -1,6 +1,6 @@
 # Brew EdgeTech
 
-Brew EdgeTech is a Next.js 15 application that serves the marketing website, static service pages, admin CMS, and REST API from one Node.js service. MongoDB stores the CMS content, portfolio, media, enquiries, analytics, revisions, schedules, and audit data.
+Brew EdgeTech is a Next.js 15 application. The homepage, admin CMS, and service routes are React pages written in JSX. Their original page content is kept in `app/templates/`, parsed into React elements on the server, and their browser interactions are initialized after hydration. The REST API and UI are served by the same Node.js service. MongoDB stores the CMS content, portfolio, media, enquiries, analytics, revisions, schedules, and audit data.
 
 ## Requirements
 
@@ -66,11 +66,12 @@ The application permits same-origin framing only. The admin's embedded website p
 
 ## Application overview
 
-- Runtime packages are limited to Next.js, React, MongoDB, and UUID generation; the unused shadcn/Radix component scaffold has been removed.
+- `app/page.jsx`, `app/admin/page.jsx`, and `app/services/[service]/page.jsx` are the JSX page routes.
+- Reusable React UI components and hooks are in `components/` and `hooks/`.
+- `app/templates/` holds the original page content used by the React-rendered routes; these files are not served directly as public pages.
 - `app/api/[[...path]]/route.js` implements the MongoDB connection, HMAC-signed httpOnly admin cookie, and `/api/*` REST endpoints.
-- `public/site.html` is the main marketing site; `public/services/*/index.html` are the service landing pages.
-- `public/admin/index.html` is the CMS at `/admin`.
-- `next.config.js` maps the public routes and applies response security headers.
+- `public/` contains static assets such as images, logos, and icons.
+- `next.config.js` applies response security headers.
 - MongoDB collections are created as needed, including `site_content`, `portfolio`, `media`, `leads`, `engagement`, `error_logs`, `revisions`, `schedules`, and `audit`.
 
 Public API endpoints include `GET /api/health`, `POST /api/leads`, `GET /api/site-content`, `GET /api/portfolio`, `POST /api/engagement`, and `POST /api/error-log`. Admin APIs are under `/api/admin/*` and require login; `GET|POST|DELETE /api/admin-auth` manages the session. Lead submissions are stored in MongoDB; outbound email notifications are not configured.

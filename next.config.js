@@ -7,23 +7,6 @@ const nextConfig = {
     ],
   },
   serverExternalPackages: ['mongodb'],
-  async rewrites() {
-    return {
-      beforeFiles: [
-        { source: '/', destination: '/site.html' },
-        { source: '/admin', destination: '/admin/index.html' },
-        { source: '/admin/', destination: '/admin/index.html' },
-        { source: '/services/website-design', destination: '/services/website-design/index.html' },
-        { source: '/services/website-design/', destination: '/services/website-design/index.html' },
-        { source: '/services/custom-software', destination: '/services/custom-software/index.html' },
-        { source: '/services/custom-software/', destination: '/services/custom-software/index.html' },
-        { source: '/services/ai-automation', destination: '/services/ai-automation/index.html' },
-        { source: '/services/ai-automation/', destination: '/services/ai-automation/index.html' },
-        { source: '/services/seo-visibility', destination: '/services/seo-visibility/index.html' },
-        { source: '/services/seo-visibility/', destination: '/services/seo-visibility/index.html' },
-      ],
-    };
-  },
   webpack(config, { dev }) {
     if (dev) {
       config.watchOptions = { poll: 2000, aggregateTimeout: 300, ignored: ['**/node_modules'] };
