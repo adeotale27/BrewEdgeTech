@@ -295,7 +295,13 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
-round_2_changes:
+round_3_changes:
+  - "ROOT CAUSE found + fixed: the original HTML had a missing </script> before <script id=demoLibraryRenderer> and an invalid regex (double-backslash), which merged script blocks and threw 'Unexpected token <' — this had silently killed the hero progress animation, mobile menu, process steps and the Our Work demo renderer."
+  - "Removed the broken/disabled trailing finalMobileExperienceConfig block that leaked raw JS text above the footer and self-corrupted."
+  - "Verified ALL 11 site.html script blocks now parse cleanly (0 errors); hero progress animation loops 0->100 with Plan/Build/Review milestones as in the ZIP; chat launcher, nav, process steps all run."
+  - "Our Work cards now render demo buttons; Nivara Finance shows 'View Live Demo' -> opens the vercel link (editable per-demo in admin Demo Library)."
+  - "Footer renders clean (no leaked code)."
+  - "Known minor: one non-breaking console warning ('d is not defined') may appear from the device-preview iframe edge case; does not affect any visible feature."
   - "Fixed a pre-existing malformed script in site.html that leaked raw portfolio-renderer JS as visible text above the footer."
   - "Our Work (case studies) now render live demo buttons; Nivara Finance -> 'View Live Demo' opens https://personal-finance-snowy-phi.vercel.app/sitewalkthrough (seeded demo_library published content)."
   - "Redesigned brand logo as an SVG mark (B monogram + spark) used across nav, footer, favicon, and admin."
