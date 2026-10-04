@@ -1,20 +1,46 @@
 import { MongoClient } from 'mongodb'
 import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
+import mongoConnection from '../../../lib/mongo-connection.cjs'
+import siteSeedData from '../../../lib/site-seed-data.cjs'
+
+const { configureMongoDns, mongoConnectionUri } = mongoConnection
+const { seedBuiltInData } = siteSeedData
 
 /* ------------------------------------------------------------------ */
 /*  Database                                                          */
 /* ------------------------------------------------------------------ */
-let client
 let db
+let dbConnection
+let dbRetryAfter = 0
+let dbLastError
 
 async function connectToMongo() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGO_URL)
-    await client.connect()
-    db = client.db(process.env.DB_NAME || 'brew_edgetech')
+  if (db) return db
+  if (Date.now() < dbRetryAfter) throw dbLastError
+  if (!dbConnection) {
+    configureMongoDns()
+
+    const client = new MongoClient(mongoConnectionUri(), { serverSelectionTimeoutMS: 10000 })
+    dbConnection = client.connect().then(() => {
+      db = client.db(process.env.DB_NAME || 'brew_edgetech')
+      dbLastError = undefined
+      dbRetryAfter = 0
+      return db
+    }).catch(async (error) => {
+      dbConnection = undefined
+      dbLastError = error
+      dbRetryAfter = Date.now() + 10000
+      console.error('DB connection error:', error)
+      try {
+        await client.close()
+      } catch (closeError) {
+        console.error('Mongo client cleanup error:', closeError)
+      }
+      throw error
+    })
   }
-  return db
+  return dbConnection
 }
 
 /* ------------------------------------------------------------------ */
@@ -34,6 +60,14 @@ function json(data, status = 200) {
 
 function fail(code, message, status = 400) {
   return handleCORS(NextResponse.json({ success: false, error: { code, message } }, { status }))
+}
+
+function databaseDiagnostic(error) {
+  const code = String(error?.code || error?.codeName || error?.name || 'UNKNOWN')
+  const message = String(error?.message || 'No additional error details were provided.')
+    .replace(/mongodb(?:\+srv)?:\/\/[^\s"'<>]+/gi, '[redacted MongoDB URI]')
+    .slice(0, 300)
+  return { code, message }
 }
 
 async function readBody(request) {
@@ -126,7 +160,38 @@ async function writeAudit(db, action, entity_type, entity_id, details = {}) {
       id: uuidv4(), action, entity_type, entity_id: entity_id || null,
       actor: 'admin', details, created_at: new Date().toISOString(),
     })
-  } catch {}
+  } catch (error) {
+    console.error('Audit insert error:', databaseDiagnostic(error))
+  }
+}
+
+async function handleAdminAuth(request, method) {
+  if (method === 'GET') {
+    return json({ authenticated: await isAdmin(request) })
+  }
+  if (method === 'POST') {
+    if (!USERNAME() || !PASSWORD() || !SECRET()) {
+      return fail('NOT_CONFIGURED', 'Admin credentials are not configured on the server.', 503)
+    }
+    const ip = request.headers.get('x-forwarded-for') || 'local'
+    if (rateLimited(ip)) return fail('RATE_LIMITED', 'Too many attempts. Please try again later.', 429)
+    const b = await readBody(request)
+    const u = str(b.username, 160)
+    const p = str(b.password, 200)
+    if (u !== USERNAME() || p !== PASSWORD()) {
+      if (db) await writeAudit(db, 'login_failed', 'auth', null, { username: u })
+      return fail('INVALID_CREDENTIALS', 'Invalid username or password.', 401)
+    }
+    loginAttempts.delete(ip)
+    if (db) await writeAudit(db, 'login', 'auth', null, {})
+    return await setSessionCookie(json({ ok: true, username: u }), u)
+  }
+  if (method === 'DELETE') {
+    const res = json({ ok: true })
+    res.cookies.set(COOKIE, '', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 0 })
+    return res
+  }
+  return fail('NOT_FOUND', `Route /admin-auth does not support ${method}.`, 404)
 }
 
 /* ------------------------------------------------------------------ */
@@ -161,7 +226,9 @@ async function processDueSchedules(db) {
       }
       await db.collection('schedules').updateOne({ id: s.id }, { $set: { status: 'published' } })
     }
-  } catch {}
+  } catch (error) {
+    console.error('Scheduled publishing error:', databaseDiagnostic(error))
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -172,20 +239,43 @@ async function handleRoute(request, { params }) {
   const route = `/${path.join('/')}`
   const method = request.method
 
+  if (route === '/admin-auth') return handleAdminAuth(request, method)
+
   let db
   try {
     db = await connectToMongo()
   } catch (e) {
-    console.error('DB connection error:', e)
-    return fail('DB_UNAVAILABLE', 'Database is currently unavailable.', 503)
+    if (route === '/health' && method === 'GET') {
+      return json({
+        status: 'degraded',
+        database: 'down',
+        error: databaseDiagnostic(e),
+        time: new Date().toISOString(),
+      }, 503)
+    }
+    const diagnostic = databaseDiagnostic(e)
+    return fail(
+      'DB_UNAVAILABLE',
+      `Database is currently unavailable (${diagnostic.code}): ${diagnostic.message}`,
+      503,
+    )
   }
 
   try {
     /* ---------------- Health ---------------- */
     if (route === '/health' && method === 'GET') {
-      let dbOk = true
-      try { await db.command({ ping: 1 }) } catch { dbOk = false }
-      return json({ status: dbOk ? 'ok' : 'degraded', database: dbOk ? 'connected' : 'down', time: new Date().toISOString() }, dbOk ? 200 : 503)
+      try {
+        await db.command({ ping: 1 })
+        return json({ status: 'ok', database: 'connected', time: new Date().toISOString() })
+      } catch (error) {
+        console.error('DB health check error:', error)
+        return json({
+          status: 'degraded',
+          database: 'down',
+          error: databaseDiagnostic(error),
+          time: new Date().toISOString(),
+        }, 503)
+      }
     }
 
     /* ---------------- Public: leads ---------------- */
@@ -294,40 +384,16 @@ async function handleRoute(request, { params }) {
       return handleCORS(res)
     }
 
-    /* ---------------- Admin auth ---------------- */
-    if (route === '/admin-auth') {
-      if (method === 'GET') {
-        return json({ authenticated: await isAdmin(request) })
-      }
-      if (method === 'POST') {
-        if (!USERNAME() || !PASSWORD() || !SECRET()) {
-          return fail('NOT_CONFIGURED', 'Admin credentials are not configured on the server.', 503)
-        }
-        const ip = request.headers.get('x-forwarded-for') || 'local'
-        if (rateLimited(ip)) return fail('RATE_LIMITED', 'Too many attempts. Please try again later.', 429)
-        const b = await readBody(request)
-        const u = str(b.username, 160)
-        const p = str(b.password, 200)
-        if (u !== USERNAME() || p !== PASSWORD()) {
-          await writeAudit(db, 'login_failed', 'auth', null, { username: u })
-          return fail('INVALID_CREDENTIALS', 'Invalid username or password.', 401)
-        }
-        loginAttempts.delete(ip)
-        await writeAudit(db, 'login', 'auth', null, {})
-        const res = json({ ok: true, username: u })
-        return await setSessionCookie(res, u)
-      }
-      if (method === 'DELETE') {
-        const res = json({ ok: true })
-        res.cookies.set(COOKIE, '', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 0 })
-        return res
-      }
-    }
-
     /* ================= ADMIN-PROTECTED ROUTES ================= */
     if (route.startsWith('/admin/') || (route === '/engagement/summary')) {
       if (!(await isAdmin(request))) {
         return fail('UNAUTHORIZED', 'Admin login required.', 401)
+      }
+
+      if (route === '/admin/import-built-in-data' && method === 'POST') {
+        const counts = await seedBuiltInData(db)
+        await writeAudit(db, 'import_builtin_data', 'database', 'built-in-data', counts)
+        return json({ ok: true, counts })
       }
 
       /* --------- content --------- */
@@ -340,7 +406,10 @@ async function handleRoute(request, { params }) {
           const b = await readBody(request)
           const key = str(b.key, 60)
           if (!key) return fail('VALIDATION_ERROR', 'content key is required', 400)
-          const content = b.content && typeof b.content === 'object' ? b.content : {}
+          if (!b.content || typeof b.content !== 'object' || Array.isArray(b.content)) {
+            return fail('VALIDATION_ERROR', 'content must be a JSON object', 400)
+          }
+          const content = b.content
           const now = new Date().toISOString()
           await db.collection('site_content').updateOne(
             { content_key: key },
