@@ -76,6 +76,8 @@
     [hidden]{display:none!important}
     .brand .mark,.mark{width:40px!important;height:40px!important;flex:0 0 40px!important;background:url('/favicon.svg') center/112% 112% no-repeat!important;border-radius:12px!important;box-shadow:0 5px 14px #3859d533!important;overflow:hidden!important;transform:none!important}
     #mobile-experience .responsiveDemo{height:200px;position:relative;overflow:hidden}
+    #mobile-experience .responsiveControls{display:flex!important;visibility:visible!important;opacity:1!important}
+    #mobile-experience .responsiveControls .deviceChoice{display:inline-flex!important;visibility:visible!important;opacity:1!important}
     #mobile-experience .responsiveDemo .responsiveDesktop,#mobile-experience .responsiveDemo .responsiveTablet,#mobile-experience .responsiveDemo .responsivePhone{display:none;position:absolute;left:50%;top:50%;margin:0;transform:translate(-50%,-50%)!important;opacity:1!important;filter:none!important;transition:none}
     #mobile-experience .responsiveDemo.device-desktop .responsiveDesktop{display:block;width:min(92%,360px)!important;height:150px;z-index:2}
     #mobile-experience .responsiveDemo.device-tablet .responsiveTablet{display:block;width:min(76%,290px)!important;height:150px;z-index:2}

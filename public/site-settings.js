@@ -1,4 +1,8 @@
 (() => {
+  document.querySelectorAll('.brand b').forEach((name) => {
+    if (!name.textContent.trim()) name.textContent = 'Brew EdgeTech'
+  })
+
   function applySettings(content = {}) {
     const footer = content.footer || {}
     const set = (selector, value) => {

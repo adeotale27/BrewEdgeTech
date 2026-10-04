@@ -1,7 +1,8 @@
 const assert = require('node:assert/strict')
+const fs = require('node:fs')
 const test = require('node:test')
 const { mongoConnectionUri } = require('../lib/mongo-connection.cjs')
-const { seedBuiltInData } = require('../lib/site-seed-data.cjs')
+const { getBuiltInSiteContent, seedBuiltInData } = require('../lib/site-seed-data.cjs')
 
 function createDb(initial = {}) {
   const collections = new Map()
@@ -59,6 +60,25 @@ test('does not replace existing content when adding other defaults', async () =>
   assert.equal(result.preserved.site_content, 1)
   assert.deepEqual(db.collections.get('site_content').get('demo_library'), existingContent)
   assert.equal(db.collections.get('site_content').size, 8)
+})
+
+test('returns isolated public defaults for database-outage rendering', () => {
+  const first = getBuiltInSiteContent()
+  assert.equal(first.homepage.about_title, 'Serious Technology.\nHuman Partnership.')
+  assert.equal(first.pricing.items.length, 3)
+  assert.equal(first.faq.items.length, 4)
+  assert.equal(first.demo_library.items.length, 3)
+
+  first.pricing.items.pop()
+  assert.equal(getBuiltInSiteContent().pricing.items.length, 3)
+})
+
+test('keeps all responsive preview controls visible in the public page', () => {
+  const site = fs.readFileSync(require.resolve('../public/site.html'), 'utf8')
+  assert.doesNotMatch(site, /\.responsiveControls\s*\{\s*display\s*:\s*none\s*!important\s*\}/i)
+  for (const device of ['desktop', 'tablet', 'phone']) {
+    assert.match(site, new RegExp(`data-device="${device}"`))
+  }
 })
 
 test('builds an Atlas seed-list URI from validated environment settings', () => {

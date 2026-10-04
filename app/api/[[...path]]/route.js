@@ -5,7 +5,7 @@ import mongoConnection from '../../../lib/mongo-connection.cjs'
 import siteSeedData from '../../../lib/site-seed-data.cjs'
 
 const { configureMongoDns, mongoConnectionUri } = mongoConnection
-const { seedBuiltInData } = siteSeedData
+const { getBuiltInSiteContent, seedBuiltInData } = siteSeedData
 
 /* ------------------------------------------------------------------ */
 /*  Database                                                          */
@@ -252,6 +252,15 @@ async function handleRoute(request, { params }) {
         error: databaseDiagnostic(e),
         time: new Date().toISOString(),
       }, 503)
+    }
+    if (route === '/site-content' && method === 'GET') {
+      const diagnostic = databaseDiagnostic(e)
+      console.error('Public content database unavailable; serving built-in defaults:', diagnostic)
+      return json({
+        content: getBuiltInSiteContent(),
+        source: 'built-in-fallback',
+        database_available: false,
+      })
     }
     const diagnostic = databaseDiagnostic(e)
     return fail(

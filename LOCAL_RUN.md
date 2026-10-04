@@ -50,3 +50,27 @@ npm run start
 
 The app listens on port `3000` by default; the host can set `PORT`. Confirm
 <https://your-domain/api/health> reports a connected database after deployment.
+
+### Vercel and MongoDB Atlas
+
+In Vercel, open **Project → Settings → Environment Variables** and configure
+the production values for `MONGO_URL`, `DB_NAME`, `ADMIN_USERNAME`,
+`ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, `NEXT_PUBLIC_BASE_URL`, and
+`CORS_ORIGINS`. Add the same database settings to Preview only if preview
+deployments should access a database. Redeploy after changing environment
+variables; they are not applied to deployments that are already running.
+
+Use the Atlas application's `mongodb+srv://` URI and URL-encode special
+characters in the database username and password. If the Vercel function
+cannot resolve Atlas SRV records, set `MONGO_SEED_HOSTS` and
+`MONGO_REPLICA_SET` using the current SRV and TXT records shown by Atlas.
+Never guess or reuse stale seed hosts.
+
+The Atlas Network Access list must allow the Vercel function's actual outbound
+addresses. Use a Vercel plan/networking option with stable outbound addresses
+or another private connectivity option supported by both providers; do not
+open Atlas to `0.0.0.0/0`. Verify the deployed `https://your-domain/api/health`
+returns HTTP 200 and `"database":"connected"` before considering the site
+ready. A 503 with a TLS alert means the deployed function still cannot establish
+its Atlas connection; changing frontend code or pushing another commit will
+not correct missing or stale deployment/network settings.

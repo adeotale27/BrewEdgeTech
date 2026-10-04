@@ -79,12 +79,25 @@ the VM firewall aligned when your trusted IP changes.
 ## 4. Prepare GitHub access and the first release
 
 For a private repository, create a read-only GitHub deploy key for the
-`adeotale27/BrewEdgeTech` repository. Install the private key for the
-`brewedgetech` account with permissions `0700` on its `.ssh` directory and
-`0600` on the private key; add the matching public key under the repository's
-**Settings → Deploy keys**. Never paste a personal access token into a clone
-URL or shell history. For a public repository, HTTPS cloning does not require
-a deploy key.
+`adeotale27/BrewEdgeTech` repository. Generate a dedicated key as the
+application account:
+
+```bash
+sudo -u brewedgetech -H bash
+umask 077
+mkdir -p ~/.ssh
+chmod 0700 ~/.ssh
+ssh-keygen -t ed25519 -C "brewedgetech-read-only-deploy" -f ~/.ssh/id_ed25519 -N ""
+cat ~/.ssh/id_ed25519.pub
+exit
+```
+
+Add the displayed public key under the repository's **Settings → Deploy keys**
+with read-only access. Keep the private key on the VM; its directory and file
+permissions are `0700` and `0600`. When Git first connects, verify GitHub's SSH
+host fingerprint before accepting it. Never paste a personal access token
+into a clone URL or shell history. For a public repository, HTTPS cloning does
+not require a deploy key.
 
 Create and build the first release as the application user:
 
