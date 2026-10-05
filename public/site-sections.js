@@ -65,6 +65,61 @@
     responsivePreview.closest('.mobileCard')?.querySelector('.responsiveControls')?.remove()
   }
 
+  const enquiryNote = document.getElementById('note')
+  const enquiryForm = enquiryNote?.closest('form')
+  if (enquiryNote && enquiryForm) {
+    const defaultNote = enquiryNote.textContent.trim()
+    const showConfirmation = () => {
+      if (!enquiryNote.classList.contains('success') || enquiryForm.classList.contains('is-submitted')) return
+      const confirmationText = enquiryNote.textContent.trim()
+      enquiryForm.classList.add('is-submitted')
+
+      const icon = document.createElement('span')
+      icon.className = 'enquiryConfirmationIcon'
+      icon.setAttribute('aria-hidden', 'true')
+      icon.textContent = '✓'
+
+      const content = document.createElement('div')
+      content.className = 'enquiryConfirmationContent'
+      const eyebrow = document.createElement('span')
+      eyebrow.className = 'enquiryConfirmationEyebrow'
+      eyebrow.textContent = 'ENQUIRY RECEIVED'
+      const heading = document.createElement('h3')
+      heading.textContent = 'Thank you. We’ll take it from here.'
+      const message = document.createElement('p')
+      message.textContent = confirmationText.includes('our team has been notified')
+        ? 'Your project details are saved and our team has been notified.'
+        : 'Your project details are saved securely.'
+      const nextSteps = document.createElement('ul')
+      nextSteps.className = 'enquiryConfirmationSteps'
+      for (const stepText of ['Our team will review your project details.', 'We’ll follow up using the email you provided.']) {
+        const step = document.createElement('li')
+        step.textContent = stepText
+        nextSteps.appendChild(step)
+      }
+      const reset = document.createElement('button')
+      reset.className = 'enquiryConfirmationReset'
+      reset.type = 'button'
+      reset.textContent = 'Send another enquiry'
+      reset.addEventListener('click', () => {
+        enquiryForm.classList.remove('is-submitted')
+        enquiryNote.classList.remove('success')
+        enquiryNote.replaceChildren(document.createTextNode(defaultNote))
+        enquiryForm.reset()
+        enquiryForm.querySelector('input, select, textarea')?.focus()
+      })
+      content.append(eyebrow, heading, message, nextSteps, reset)
+      enquiryNote.replaceChildren(icon, content)
+    }
+    new MutationObserver(showConfirmation).observe(enquiryNote, {
+      attributes: true,
+      attributeFilter: ['class'],
+      childList: true,
+      characterData: true,
+      subtree: true,
+    })
+  }
+
   const visibilityStyle = document.createElement('style')
   visibilityStyle.textContent = `
     [hidden]{display:none!important}

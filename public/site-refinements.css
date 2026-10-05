@@ -692,6 +692,132 @@ body[data-theme="dark"] .testimonialRole {
   transform: translateY(-2px);
 }
 
+.contact .form.is-submitted {
+  display: flex;
+  min-height: 390px;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 3vw, 38px);
+  border: 1px solid #ffffff24;
+  border-radius: 20px;
+  background:
+    radial-gradient(ellipse at 0 0, #21bdc51c, transparent 52%),
+    linear-gradient(145deg, #ffffff12, #ffffff08);
+}
+
+.contact .form.is-submitted > :not(.formnote) {
+  display: none !important;
+}
+
+.contact .formnote.success {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 54px minmax(0, 1fr);
+  align-items: start;
+  gap: 7px 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #e8f1ff;
+  text-align: left;
+  white-space: normal;
+}
+
+.enquiryConfirmationIcon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  grid-row: span 2;
+  place-items: center;
+  border: 1px solid #6ce1d05e;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #20c4b633, #2588ff36);
+  color: #80f0d5;
+  font-size: 25px;
+  font-weight: 800;
+  box-shadow: 0 12px 28px #02081730;
+}
+
+.enquiryConfirmationContent {
+  min-width: 0;
+}
+
+.enquiryConfirmationEyebrow {
+  display: block;
+  margin: 1px 0 9px;
+  color: #82e6de;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.enquiryConfirmationContent h3 {
+  max-width: 18ch;
+  margin: 0 0 11px;
+  color: #fff;
+  font: 800 clamp(24px, 2.6vw, 32px)/1.14 Manrope, 'DM Sans', sans-serif;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+.enquiryConfirmationContent p {
+  max-width: 48ch;
+  margin: 0;
+  color: #cad6ec;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.enquiryConfirmationSteps {
+  display: grid;
+  gap: 9px;
+  margin: 22px 0;
+  padding: 17px 0;
+  border-top: 1px solid #ffffff20;
+  border-bottom: 1px solid #ffffff20;
+  list-style: none;
+}
+
+.enquiryConfirmationSteps li {
+  position: relative;
+  padding-left: 22px;
+  color: #e8efff;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.enquiryConfirmationSteps li::before {
+  position: absolute;
+  left: 0;
+  color: #72e4d0;
+  content: '✓';
+  font-weight: 800;
+}
+
+.enquiryConfirmationReset {
+  min-height: 42px;
+  padding: 10px 15px;
+  border: 1px solid #ffffff42;
+  border-radius: 10px;
+  background: #ffffff10;
+  color: #fff;
+  font: 700 13px 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.enquiryConfirmationReset:hover {
+  transform: translateY(-1px);
+  border-color: #82e6de;
+  background: #ffffff18;
+}
+
+.enquiryConfirmationReset:focus-visible {
+  outline: 3px solid #05bfd0;
+  outline-offset: 3px;
+}
+
 .navCta:focus-visible,
 .sectionContactPrompt .btn:focus-visible,
 .hero .actions .btn:focus-visible {
@@ -790,6 +916,32 @@ body[data-theme="dark"] .testimonialRole {
 
   .contact .cta > div:first-child > p {
     font-size: 15px;
+  }
+
+  .contact .form.is-submitted {
+    min-height: 0;
+    padding: 22px 18px;
+  }
+
+  .contact .formnote.success {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 7px 12px;
+  }
+
+  .enquiryConfirmationIcon {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    font-size: 21px;
+  }
+
+  .enquiryConfirmationContent h3 {
+    font-size: clamp(23px, 7vw, 30px);
+  }
+
+  .enquiryConfirmationSteps {
+    margin: 17px 0;
+    padding: 14px 0;
   }
 
   .contact .contactPromises {

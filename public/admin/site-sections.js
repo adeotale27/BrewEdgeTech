@@ -702,3 +702,243 @@
 
   pinAdditionalSaveActions()
 })()
+
+;(() => {
+  const lists = [
+    ['versionList', 'versionRecord'],
+    ['auditList', 'auditRecord'],
+  ]
+
+  function polishAdminRecords(listId, recordClass) {
+    const list = document.getElementById(listId)
+    if (!list) return
+    const records = list.querySelectorAll(':scope > .project')
+    if (!records.length) return
+
+    list.classList.remove('empty')
+    list.classList.add('adminRecordList')
+    records.forEach((record) => {
+      record.classList.add(recordClass)
+      if (record.dataset.adminPolished) return
+      record.dataset.adminPolished = 'true'
+
+      if (recordClass === 'auditRecord') {
+        const summary = record.children[0]
+        const rawDetails = record.children[1]
+        summary?.classList.add('auditSummary')
+        const action = summary?.querySelector('b')
+        if (action) action.textContent = action.textContent.replaceAll('_', ' ')
+        rawDetails?.classList.add('auditDetails')
+        if (rawDetails) {
+          let details = {}
+          let unformattedDetails = ''
+          try {
+            details = JSON.parse(rawDetails.textContent || '{}')
+          } catch {
+            unformattedDetails = rawDetails.textContent || ''
+          }
+          const detailList = document.createElement('dl')
+          detailList.className = 'auditDetailList'
+          if (details && typeof details === 'object' && !Array.isArray(details)) {
+            for (const [key, value] of Object.entries(details)) {
+              const term = document.createElement('dt')
+              term.textContent = key.replaceAll('_', ' ').replace(/^./, (letter) => letter.toUpperCase())
+              const description = document.createElement('dd')
+              description.textContent = typeof value === 'string' ? value : JSON.stringify(value)
+              detailList.append(term, description)
+            }
+          }
+          if (unformattedDetails) {
+            const term = document.createElement('dt')
+            term.textContent = 'Details'
+            const description = document.createElement('dd')
+            description.textContent = unformattedDetails
+            detailList.append(term, description)
+          } else if (!detailList.children.length) {
+            const empty = document.createElement('dd')
+            empty.textContent = 'No additional details'
+            detailList.appendChild(empty)
+          }
+          rawDetails.replaceChildren(detailList)
+        }
+      } else {
+        record.children[0]?.classList.add('versionSummary')
+      }
+    })
+  }
+
+  function watchAdminRecordLists() {
+    for (const [listId, recordClass] of lists) {
+      const list = document.getElementById(listId)
+      if (!list || list.dataset.adminRecordObserver) continue
+      list.dataset.adminRecordObserver = 'true'
+      new MutationObserver(() => polishAdminRecords(listId, recordClass)).observe(list, {
+        childList: true,
+        subtree: true,
+      })
+      polishAdminRecords(listId, recordClass)
+    }
+  }
+
+  function polishLeadControls() {
+    document.querySelectorAll('#leadList > .lead').forEach((record) => {
+      if (record.dataset.crmPolished) return
+      const fields = record.children[3]
+      const contact = record.children[0]
+      const service = record.children[1]
+      const details = record.children[2]
+      const remove = record.querySelector('[data-ld]')
+      const status = fields?.querySelector('[data-status]')
+      const received = fields?.querySelector('small')
+      const notes = fields?.querySelector('[data-notes]')
+      const followUp = fields?.querySelector('[data-follow]')
+      const deal = fields?.querySelector('[data-deal]')
+      const save = fields?.querySelector('[data-leadsave]')
+      if (!fields || !contact || !service || !details || !remove || !status || !received || !notes || !followUp || !deal || !save) return
+
+      record.dataset.crmPolished = 'true'
+      record.classList.add('crmLeadCard')
+      contact.classList.add('crmLeadContact')
+      service.classList.add('crmLeadService')
+      details.classList.add('crmLeadDetails')
+      fields.className = 'crmLeadFollowUp'
+
+      const name = contact.querySelector('b')?.textContent || 'this enquiry'
+      const header = document.createElement('div')
+      header.className = 'crmLeadHeader'
+      header.append(contact, service, remove)
+      remove.setAttribute('aria-label', `Delete enquiry from ${name}`)
+
+      const heading = document.createElement('span')
+      heading.className = 'crmLeadSectionTitle'
+      heading.textContent = 'Project details'
+      details.prepend(heading)
+
+      const sectionTitle = document.createElement('span')
+      sectionTitle.className = 'crmLeadSectionTitle'
+      sectionTitle.textContent = 'Follow-up'
+      const receivedLabel = document.createElement('span')
+      receivedLabel.className = 'crmLeadReceivedLabel'
+      receivedLabel.textContent = 'Received'
+      const receivedWrap = document.createElement('div')
+      receivedWrap.className = 'crmLeadReceived'
+      receivedWrap.append(receivedLabel, received)
+
+      const field = (labelText, input, className) => {
+        const wrapper = document.createElement('label')
+        wrapper.className = `crmLeadField${className ? ` ${className}` : ''}`
+        const label = document.createElement('span')
+        label.textContent = labelText
+        wrapper.append(label, input)
+        return wrapper
+      }
+
+      notes.placeholder = 'Add an internal note'
+      followUp.setAttribute('aria-label', 'Follow-up date and time')
+      deal.placeholder = '₹ e.g. 50000'
+      fields.replaceChildren(
+        sectionTitle,
+        field('Status', status, 'crmLeadStatus'),
+        receivedWrap,
+        field('Internal notes', notes, 'crmLeadNotes'),
+        field('Follow-up date', followUp, 'crmLeadDate'),
+        field('Deal value', deal, 'crmLeadDeal'),
+        save,
+      )
+      record.replaceChildren(header, details, fields)
+
+      status?.setAttribute('aria-label', 'Enquiry status')
+      received.setAttribute('aria-label', 'Enquiry received date')
+      notes.setAttribute('aria-label', 'Internal notes')
+      deal.setAttribute('aria-label', 'Deal value in rupees')
+    })
+  }
+
+  watchAdminRecordLists()
+  const leadList = document.getElementById('leadList')
+  if (leadList) {
+    new MutationObserver(polishLeadControls).observe(leadList, { childList: true, subtree: true })
+    polishLeadControls()
+  }
+
+  function polishSeoAudit() {
+    const box = document.getElementById('seoAuditBox')
+    if (!box) return
+
+    const summary = box.querySelector(':scope > .stats')
+    if (summary) {
+      summary.classList.add('seoAuditSummary')
+      const pages = Number(summary.querySelector('.stat:first-child strong')?.textContent || 0)
+      const issues = Number(summary.querySelector('.stat:nth-child(2) strong')?.textContent || 0)
+      const totalChecks = [...box.querySelectorAll(':scope > .seoPageCard .seoCheck')].length
+      let checksCard = summary.querySelector('.seoChecksReviewed')
+      if (!checksCard) {
+        checksCard = document.createElement('div')
+        checksCard.className = 'stat seoChecksReviewed'
+        checksCard.innerHTML = '<small>Checks reviewed</small><strong></strong>'
+        summary.appendChild(checksCard)
+      }
+      const checksValue = checksCard.querySelector('strong')
+      if (checksValue.textContent !== String(totalChecks)) checksValue.textContent = String(totalChecks)
+      const pagesLabel = summary.querySelector('.stat:first-child small')
+      if (pagesLabel.textContent !== 'Pages checked') pagesLabel.textContent = 'Pages checked'
+      const issuesLabel = summary.querySelector('.stat:nth-child(2) small')
+      if (issuesLabel.textContent !== 'Checks needing attention') issuesLabel.textContent = 'Checks needing attention'
+      summary.dataset.auditState = issues ? 'issues' : 'clear'
+      summary.setAttribute('aria-label', `${pages} pages checked, ${issues} checks need attention`)
+    }
+
+    box.querySelectorAll(':scope > .project').forEach((card) => {
+      card.classList.add('seoPageCard')
+      const content = card.firstElementChild
+      if (!content || content.dataset.seoFormatted) return
+      content.dataset.seoFormatted = 'true'
+      content.classList.add('seoPageContent')
+
+      const title = content.querySelector('b')
+      title?.classList.add('seoPageTitle')
+      const meta = content.querySelector('p')
+      meta?.classList.add('seoPageMeta')
+
+      content.querySelectorAll(':scope > p').forEach((check) => {
+        if (check === meta) return
+        const badge = check.querySelector('.tag')
+        if (!badge) return
+        const status = badge.textContent.trim().toLowerCase()
+        const raw = check.textContent.replace(/^(PASS|ISSUE)\s*/i, '').trim()
+        const separator = raw.indexOf(':')
+        const label = separator < 0 ? raw : raw.slice(0, separator).trim()
+        const message = separator < 0 ? '' : raw.slice(separator + 1).trim()
+        const labelNode = document.createElement('strong')
+        labelNode.className = 'seoCheckLabel'
+        labelNode.textContent = label
+        const messageNode = document.createElement('span')
+        messageNode.className = 'seoCheckMessage'
+        messageNode.textContent = message
+        check.className = `seoCheck ${status === 'pass' ? 'isPass' : 'isIssue'}`
+        badge.classList.add('seoCheckBadge')
+        badge.setAttribute('aria-label', status === 'pass' ? 'Passed' : 'Needs attention')
+        check.replaceChildren(badge, labelNode, messageNode)
+      })
+    })
+  }
+
+  const seoAuditBox = document.getElementById('seoAuditBox')
+  if (seoAuditBox) {
+    new MutationObserver(polishSeoAudit).observe(seoAuditBox, { childList: true, subtree: true })
+    polishSeoAudit()
+  }
+
+  new MutationObserver(watchAdminRecordLists).observe(document.body, {
+    childList: true,
+    subtree: true,
+  })
+
+  const pageHeadings = { errors: 'Error logs', versions: 'Version control' }
+  document.querySelectorAll('.nav[data-view]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const heading = pageHeadings[button.dataset.view]
+      if (heading) document.getElementById('heading').textContent = heading
+    })
+  })
+})()
