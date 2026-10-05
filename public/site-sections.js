@@ -18,69 +18,66 @@
   const mobileExperience = document.getElementById('mobile-experience')
   const valueBand = document.querySelector('.valueBand')
 
+  const navCta = document.querySelector('.navCta')
+  if (navCta) {
+    const arrow = navCta.querySelector('span')
+    navCta.replaceChildren(document.createTextNode('Discuss a Project '))
+    if (arrow) navCta.appendChild(arrow)
+  }
+  const heroEyebrow = hero?.querySelector('.eyebrow')
+  if (heroEyebrow) heroEyebrow.textContent = '✧  DIGITAL EXPERIENCES, MADE FOR WHAT’S NEXT'
+
   if (hero && ticker && hero.nextElementSibling !== ticker) hero.after(ticker)
   if (mobileExperience && valueBand && mobileExperience.nextElementSibling !== valueBand) {
     mobileExperience.after(valueBand)
   }
-  document.querySelector('.skipLink')?.remove()
-
-  function setupResponsiveDeviceControls() {
-    const demo = document.querySelector('.responsiveDemo')
-    const buttons = [...document.querySelectorAll('.responsiveControls .deviceChoice')]
-    const hint = document.querySelector('.deviceHint')
-    const labels = {
-      desktop: 'Wide layout · full navigation',
-      tablet: 'Tablet layout · balanced navigation',
-      phone: 'Phone layout · touch-friendly controls',
-    }
-    if (!demo || !buttons.length) return
-
-    const select = (device) => {
-      if (!labels[device]) return
-      demo.classList.remove('device-desktop', 'device-tablet', 'device-phone')
-      demo.classList.add(`device-${device}`)
-      buttons.forEach((button) => {
-        const active = button.dataset.device === device
-        button.hidden = false
-        button.removeAttribute('aria-hidden')
-        button.style.removeProperty('display')
-        button.classList.toggle('active', active)
-        button.setAttribute('aria-pressed', String(active))
-      })
-      if (hint) hint.textContent = labels[device]
-    }
-
-    buttons.forEach((button) => {
-      button.onclick = null
-      button.addEventListener('click', () => select(button.dataset.device))
-    })
-    select(buttons.find((button) => button.classList.contains('active'))?.dataset.device || 'desktop')
+  const contactPrompts = [
+    ['services', 'Planning a new website or product?', 'Share the outcome you’re aiming for. We’ll help you find a practical way to get there.'],
+    ['work', 'Exploring a digital product?', 'Let’s shape a considered experience around your audience and goals.'],
+    ['process', 'Want to know what comes next?', 'Start with a conversation about your goals, constraints and the right next step.'],
+  ]
+  for (const [sectionId, heading, description] of contactPrompts) {
+    const section = document.getElementById(sectionId)
+    if (!section || section.nextElementSibling?.classList.contains('sectionContactPrompt')) continue
+    const prompt = document.createElement('aside')
+    prompt.className = 'sectionContactPrompt'
+    prompt.setAttribute('aria-label', 'Discuss a project')
+    const copy = document.createElement('div')
+    const title = document.createElement('h3')
+    title.textContent = heading
+    const detail = document.createElement('p')
+    detail.textContent = description
+    copy.append(title, detail)
+    const link = document.createElement('a')
+    link.className = 'btn'
+    link.href = '#contact'
+    link.append(document.createTextNode('Discuss a Project '))
+    const arrow = document.createElement('span')
+    arrow.setAttribute('aria-hidden', 'true')
+    arrow.textContent = '↗'
+    link.appendChild(arrow)
+    prompt.append(copy, link)
+    section.after(prompt)
   }
-
-  setupResponsiveDeviceControls()
-
-  function hideStickyCtaOverMobileExperience() {
-    const section = document.getElementById('mobile-experience')
-    const stickyCta = document.querySelector('body > .mobileCta')
-    if (!section || !stickyCta || typeof IntersectionObserver === 'undefined') return
-
-    new IntersectionObserver(([entry]) => {
-      document.body.classList.toggle('mobileExperienceInView', entry.isIntersecting)
-    }).observe(section)
+  const responsivePreview = document.querySelector('#mobile-experience .responsiveDemo')
+  if (responsivePreview) {
+    responsivePreview.setAttribute('aria-label', 'Sample dashboard previews in desktop, tablet, and phone layouts')
+    responsivePreview.closest('.mobileCard')?.querySelector('.responsiveControls')?.remove()
   }
-
-  hideStickyCtaOverMobileExperience()
 
   const visibilityStyle = document.createElement('style')
   visibilityStyle.textContent = `
     [hidden]{display:none!important}
     .brand .mark,.mark{width:40px!important;height:40px!important;flex:0 0 40px!important;background:url('/favicon.svg') center/112% 112% no-repeat!important;border-radius:12px!important;box-shadow:0 5px 14px #3859d533!important;overflow:hidden!important;transform:none!important}
-    #mobile-experience .responsiveDemo{height:200px;position:relative;overflow:hidden}
-    #mobile-experience .responsiveDemo .responsiveDesktop,#mobile-experience .responsiveDemo .responsiveTablet,#mobile-experience .responsiveDemo .responsivePhone{display:none;position:absolute;left:50%;top:50%;margin:0;transform:translate(-50%,-50%)!important;opacity:1!important;filter:none!important;transition:none}
-    #mobile-experience .responsiveDemo.device-desktop .responsiveDesktop{display:block;width:min(92%,360px)!important;height:150px;z-index:2}
-    #mobile-experience .responsiveDemo.device-tablet .responsiveTablet{display:block;width:min(76%,290px)!important;height:150px;z-index:2}
-    #mobile-experience .responsiveDemo.device-phone .responsivePhone{display:block;width:92px!important;height:160px;z-index:2}
-    #mobile-experience .mobileCta{position:static!important;inset:auto!important;z-index:auto!important;box-shadow:none!important}
+    #mobile-experience .responsiveDemo{display:flex!important;align-items:flex-end!important;justify-content:center!important;gap:clamp(7px,1.4vw,14px)!important;width:100%!important;height:clamp(210px,22vw,260px)!important;min-height:210px!important;position:relative!important;overflow:hidden!important;box-sizing:border-box!important;padding:28px 12px 18px!important}
+    #mobile-experience .responsiveDemo:before{content:'ALL SCREENS · ONE EXPERIENCE'!important;top:10px!important;font-size:7px!important;letter-spacing:1.1px!important}
+    #mobile-experience .responsiveDemo:after{content:none!important}
+    #mobile-experience .responsiveControls{display:none!important}
+    #mobile-experience .deviceLabels{display:grid!important;grid-template-columns:minmax(0,57fr) minmax(0,24fr) minmax(42px,12fr)!important;gap:clamp(7px,1.4vw,14px)!important;width:calc(100% - 24px)!important;margin:6px auto 2px!important;text-align:center!important;color:#71809b!important;font-size:10px!important;font-weight:700!important;line-height:1.3!important}
+    #mobile-experience .responsiveDemo .responsiveDesktop,#mobile-experience .responsiveDemo .responsiveTablet,#mobile-experience .responsiveDemo .responsivePhone{display:block!important;position:relative!important;inset:auto!important;align-self:flex-end!important;flex-shrink:1!important;min-width:0!important;max-width:none!important;margin:0!important;box-sizing:border-box!important;transform:none!important;opacity:1!important;filter:none!important;transition:none!important}
+    #mobile-experience .responsiveDemo .responsiveDesktop{width:57%!important;height:clamp(108px,15vw,150px)!important;flex:0 1 57%!important;z-index:2!important}
+    #mobile-experience .responsiveDemo .responsiveTablet{width:24%!important;height:clamp(112px,15vw,145px)!important;flex:0 1 24%!important;z-index:2!important}
+    #mobile-experience .responsiveDemo .responsivePhone{width:12%!important;min-width:42px!important;height:clamp(122px,17vw,160px)!important;flex:0 1 12%!important;z-index:2!important}
     #mobile-experience .dummySite{display:flex;flex-direction:column;gap:4px;width:100%;height:100%;padding:9px 11px;overflow:hidden;background:#f8faff;color:#17264b;font-family:Inter,system-ui,sans-serif;line-height:1.2}
     #mobile-experience .dummyTop{display:flex;align-items:center;gap:4px;min-width:0;min-height:9px;overflow:hidden}
     #mobile-experience .dummyTop>i{width:4px;height:4px;flex:0 0 4px;border-radius:50%;background:#a3b1ce}
@@ -105,24 +102,7 @@
     #mobile-experience .responsivePhone .dummyMetric{padding:3px}
     #mobile-experience .responsivePhone .dummyChart{min-height:18px}
     #mobile-experience .responsivePhone .dummyRows{display:none}
-    .skipLink{display:none!important}
-    body.mobileExperienceInView> .mobileCta{display:none!important}
-    #testimonials.testimonials{background:#fff!important;color:#0c1c4b!important}
-    #testimonials .head h2{color:#0c1c4b!important}
-    #testimonials .head p{color:#657594!important}
-    #testimonials .testimonialCard{border-color:#d7e2f3!important;background:#fff!important;color:#0c1c4b!important;box-shadow:0 12px 32px #19367012}
-    #testimonials .testimonialCard blockquote{color:#42516f}
-    #testimonials .testimonialCard strong{color:#0c1c4b}
-    #testimonials .testimonialCard p{color:#657594!important}
-    .testimonialViewport{overflow:hidden}
-    .testimonialGrid{display:flex;gap:16px;width:max-content;animation:testimonialMarquee var(--testimonial-duration,24s) linear infinite}
-    .testimonialViewport:hover .testimonialGrid,.testimonialViewport:focus-within .testimonialGrid{animation-play-state:paused}
-    .testimonialGroup{display:flex;flex:none;gap:16px;padding-right:16px}
-    .testimonialCard{width:min(320px,calc((min(1200px,100vw - 56px) - 32px)/3));min-height:172px;padding:18px!important}
-    .testimonialCard blockquote{font-size:14px;line-height:1.55!important;margin-bottom:14px!important}
-    @keyframes testimonialMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-    @media(max-width:760px){.testimonialCard{width:min(300px,calc(100vw - 56px))}}
-    @media(prefers-reduced-motion:reduce){.testimonialGrid{animation:none}.testimonialViewport{overflow-x:auto}.testimonialGroup[aria-hidden="true"]{display:none}}
+    @media(max-width:680px){#mobile-experience .responsiveDemo{height:210px!important;min-height:210px!important;gap:7px!important;padding:26px 8px 15px!important}#mobile-experience .responsiveDemo .responsiveDesktop{height:108px!important}#mobile-experience .responsiveDemo .responsiveTablet{height:112px!important}#mobile-experience .responsiveDemo .responsivePhone{height:122px!important;min-width:42px!important}#mobile-experience .deviceLabels{width:calc(100% - 16px)!important;gap:7px!important;font-size:9px!important}}
     .mobileExperience .siteDemoFrame{display:block;width:100%;height:100%;border:0;background:#fff}
     .portfolioProjectVisual{display:grid;place-items:center;min-height:180px;padding:24px;background:radial-gradient(ellipse at 50% 30%,#7558df66,transparent 70%),linear-gradient(135deg,#111a39,#1a2a52);color:#e8edff;text-align:center;font-size:13px;font-weight:750;letter-spacing:.12em}
   `
@@ -173,7 +153,8 @@
       section = document.createElement('section')
       section.className = 'testimonials'
       section.id = 'testimonials'
-      section.innerHTML = '<div class="wrap"><div class="head"><div><div class="eyebrow">CLIENT EXPERIENCES</div><h2>What our clients <span class="grad">say.</span></h2></div><p>Feedback shared by customers about working with Brew EdgeTech.</p></div><div class="testimonialViewport" aria-label="Client testimonials"><div class="testimonialGrid"></div></div></div>'
+      section.setAttribute('aria-labelledby', 'testimonialHeading')
+      section.innerHTML = '<div class="wrap"><div class="testimonialHeading"><div><div class="eyebrow">CLIENT EXPERIENCES</div><h2 id="testimonialHeading">Words from the people<br><span class="grad">we build with.</span></h2></div><p>Real feedback from customers who have worked with Brew EdgeTech.</p></div><div class="testimonialGrid" role="list" aria-label="Customer testimonials"></div></div>'
       pricing.before(section)
       const nav = document.querySelector('.links')
       if (nav && !nav.querySelector('a[href="#testimonials"]')) {
@@ -189,34 +170,38 @@
         typeof item.quote === 'string' && item.quote.trim())
       : []
     const track = section.querySelector('.testimonialGrid')
-    const makeGroup = (cloned) => {
-      const group = document.createElement('div')
-      group.className = 'testimonialGroup'
-      group.setAttribute('role', 'list')
-      if (cloned) group.setAttribute('aria-hidden', 'true')
-      group.replaceChildren(...visible.map((item) => {
+    track.replaceChildren(...visible.map((item) => {
       const card = document.createElement('article')
       card.className = 'testimonialCard'
       card.setAttribute('role', 'listitem')
-      card.style.cssText = 'height:100%;padding:24px;border:1px solid #293656;border-radius:16px;background:#101832;color:#edf3ff'
+      const quoteMark = document.createElement('span')
+      quoteMark.className = 'testimonialQuoteMark'
+      quoteMark.setAttribute('aria-hidden', 'true')
+      quoteMark.textContent = '“'
       const quote = document.createElement('blockquote')
-      quote.textContent = `“${item.quote.trim()}”`
-      quote.style.cssText = 'margin:0 0 20px;line-height:1.75'
+      quote.textContent = item.quote.trim()
+      const attribution = document.createElement('div')
+      attribution.className = 'testimonialAttribution'
+      const initials = item.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
+      const avatar = document.createElement('span')
+      avatar.className = 'testimonialAvatar'
+      avatar.setAttribute('aria-hidden', 'true')
+      avatar.textContent = initials
+      const identity = document.createElement('span')
+      identity.className = 'testimonialIdentity'
       const name = document.createElement('strong')
       name.textContent = item.name.trim()
-      card.append(quote, name)
+      identity.appendChild(name)
       if (typeof item.role === 'string' && item.role.trim()) {
-        const byline = document.createElement('p')
+        const byline = document.createElement('span')
+        byline.className = 'testimonialRole'
         byline.textContent = item.role.trim()
-        byline.style.cssText = 'margin:5px 0 0;color:#a9b7d3;font-size:13px'
-        card.appendChild(byline)
+        identity.appendChild(byline)
       }
+      attribution.append(avatar, identity)
+      card.append(quoteMark, quote, attribution)
       return card
-      }))
-      return group
-    }
-    track.replaceChildren(makeGroup(false), makeGroup(true))
-    track.style.setProperty('--testimonial-duration', `${Math.max(18, visible.length * 6)}s`)
+    }))
     section.hidden = visible.length === 0
     const testimonialLink = document.querySelector('.links a[href="#testimonials"]')
     if (testimonialLink) testimonialLink.hidden = section.hidden
@@ -297,8 +282,30 @@
     const grid = document.querySelector('#services .servicegrid')
     if (!grid) return
 
+    const defaultServices = [
+      {
+        title: 'Web Design & Development',
+        description: 'Responsive, accessible websites with a distinctive identity and a smooth experience on every screen.',
+        url: '/services/website-design/',
+      },
+      {
+        title: 'Custom Software',
+        description: 'Purpose-built web applications, dashboards and workflows that fit how your team works.',
+        url: '/services/custom-software/',
+      },
+      {
+        title: 'AI & Automation',
+        description: 'Practical AI integrations and automated workflows that reduce repetitive work while keeping people in control.',
+        url: '/services/ai-automation/',
+      },
+      {
+        title: 'SEO & Digital Visibility',
+        description: 'Search-friendly site structure and clear content that help customers discover your business.',
+        url: '/services/seo-visibility/',
+      },
+    ]
     const icons = ['⌘', '▱', '✧', '⌕']
-    const cards = (Array.isArray(items) ? items : [])
+    const configuredServices = (Array.isArray(items) ? items : [])
       .filter((service) => service && typeof service.title === 'string' && service.title.trim())
       .slice(0, 20)
       .map((service, index) => {
@@ -318,7 +325,27 @@
         card.append(icon, arrow, title, description)
         return card
       })
-    grid.replaceChildren(...cards)
+    const cards = configuredServices.length
+      ? configuredServices
+      : grid.children.length
+        ? null
+        : defaultServices.map((service, index) => {
+            const card = document.createElement('a')
+            card.className = 'service reveal show'
+            card.href = service.url
+            const icon = document.createElement('div')
+            icon.className = 'ico'
+            icon.textContent = icons[index]
+            const arrow = document.createElement('em')
+            arrow.textContent = '↗'
+            const title = document.createElement('h3')
+            title.textContent = service.title
+            const description = document.createElement('p')
+            description.textContent = service.description
+            card.append(icon, arrow, title, description)
+            return card
+          })
+    if (cards) grid.replaceChildren(...cards)
   }
 
   function renderPricing(items = []) {
@@ -390,6 +417,20 @@
       mockup.replaceWith(frame)
     }
   }
+
+  document.addEventListener('error', (event) => {
+    const image = event.target
+    if (!(image instanceof HTMLImageElement) || !image.matches('.caseVisual > img')) return
+
+    const visual = image.parentElement
+    if (!visual) return
+
+    const placeholder = document.createElement('div')
+    placeholder.className = 'portfolioProjectVisual'
+    placeholder.textContent = visual.querySelector('.caseBadge')?.textContent?.trim().toUpperCase()
+      || 'PROJECT PREVIEW UNAVAILABLE'
+    image.replaceWith(placeholder)
+  }, true)
 
   function createPortfolioCard(project) {
     const card = document.createElement('article')

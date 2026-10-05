@@ -20,6 +20,43 @@
   `
   document.head.appendChild(adminResponsiveStyle)
 
+  const overview = document.getElementById('overview')
+  const quickActionsPanel = [...(overview?.querySelectorAll('.panel') || [])]
+    .find((panel) => panel.querySelector('.panelhead h2')?.textContent.trim() === 'Quick actions')
+  const quickActionsNote = quickActionsPanel?.querySelector(':scope > .muted')
+  if (quickActionsNote) {
+    quickActionsNote.textContent = 'Edit pages and preview before publishing, add case studies, manage demos, or upload images and videos.'
+  }
+
+  const overviewStats = overview?.querySelector('.stats')
+  if (overviewStats && !overview.querySelector('.adminGettingStarted')) {
+    const guide = document.createElement('div')
+    guide.className = 'adminGettingStarted'
+    guide.setAttribute('aria-label', 'How to update your website')
+    guide.innerHTML = `
+      <div class="adminGuideIntro">
+        <span class="growthLabel">YOUR WEBSITE, YOUR WAY</span>
+        <h2>Make a change in three simple steps</h2>
+        <p>Update your content, review the preview, then choose when it goes live.</p>
+      </div>
+      <div class="adminGuideStep"><span>01</span><div><b>Edit a section</b><small>Choose a page section and make your changes.</small></div></div>
+      <div class="adminGuideStep"><span>02</span><div><b>Save a draft</b><small>Keep changes private while you review them.</small></div></div>
+      <div class="adminGuideStep"><span>03</span><div><b>Publish when ready</b><small>Make the reviewed version visible on your site.</small></div></div>
+      <button class="btn primary adminGuideAction" type="button" data-guide-view="pages">Open page editor</button>`
+    overviewStats.after(guide)
+    guide.querySelector('[data-guide-view="pages"]')?.addEventListener('click', () => {
+      document.querySelector('.nav[data-view="pages"]')?.click()
+    })
+  }
+
+  const coverImage = document.getElementById('pimage')
+  if (coverImage?.parentElement && !coverImage.parentElement.querySelector('.adminImageHelp')) {
+    const hint = document.createElement('p')
+    hint.className = 'hint adminImageHelp'
+    hint.textContent = 'Upload the image in Media library, copy its key, then paste the key here. You can also use an HTTPS image URL.'
+    coverImage.parentElement.appendChild(hint)
+  }
+
   const sections = [
     ['.ticker', 'Capabilities ticker'],
     ['#services', 'Services'],
@@ -414,14 +451,14 @@
 
     const style = document.createElement('style')
     style.textContent = `
-      .contentWorkflowBar{position:sticky;bottom:12px;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px;padding:13px 15px;border:1px solid #53658d;border-radius:13px;background:#101832f5;box-shadow:0 12px 32px #0005;backdrop-filter:blur(14px)}
+      .contentWorkflowBar{position:sticky;bottom:12px;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px;padding:13px 15px;border:1px solid #dce4ef;border-radius:13px;background:#ffffffed;box-shadow:0 12px 32px #19367018;backdrop-filter:blur(14px)}
       .contentWorkflowCopy{min-width:0}
-      .contentWorkflowCopy strong{display:block;color:#f4f7ff;font-size:13px}
-      .contentWorkflowCopy p{margin:4px 0 0;color:#bdc9e1;font-size:11px;line-height:1.45}
+      .contentWorkflowCopy strong{display:block;color:#172543;font-size:13px}
+      .contentWorkflowCopy p{margin:4px 0 0;color:#64748b;font-size:11px;line-height:1.45}
       .contentWorkflowActions{display:flex;flex:none;gap:8px}
       .contentWorkflowBar .status{margin:5px 0 0;min-height:0}
-      .contentWorkflowBar .status:not(.error){color:#8fe1c8}
-      .contentWorkflowBar .status.error{color:#ff9bab}
+      .contentWorkflowBar .status:not(.error){color:#087f5b}
+      .contentWorkflowBar .status.error{color:#b4233a}
       @media(max-width:680px){.contentWorkflowBar{align-items:stretch;flex-direction:column;bottom:6px}.contentWorkflowActions{display:grid;grid-template-columns:1fr 1fr}.contentWorkflowActions .btn{white-space:normal}}
     `
     document.head.appendChild(style)

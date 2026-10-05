@@ -12,8 +12,15 @@
       document.querySelectorAll('.brand').forEach((brand) => {
         const name = brand.querySelector('b')
         if (!name) return
-        name.textContent = footer.company.trim()
-        brand.querySelector('small')?.remove()
+        const company = footer.company.trim()
+        if (company === 'Brew EdgeTech') {
+          const accent = document.createElement('span')
+          accent.className = 'brandAccent'
+          accent.textContent = 'EdgeTech'
+          name.replaceChildren(document.createTextNode('Brew '), accent)
+        } else {
+          name.textContent = company
+        }
       })
       const schema = document.querySelector('script[type="application/ld+json"]')
       if (schema) {
@@ -29,7 +36,18 @@
       }
     }
 
-    set('footer .footcol:last-child p', [footer.phone, footer.location].filter(Boolean).join(' · '))
+    const contactDetails = document.querySelector('footer .footcol:last-child p')
+    if (contactDetails) {
+      const lines = [footer.phone, footer.location]
+        .filter((value) => typeof value === 'string' && value.trim())
+        .map((value) => {
+          const line = document.createElement('span')
+          line.className = 'footerContactLine'
+          line.textContent = value.trim()
+          return line
+        })
+      contactDetails.replaceChildren(...lines)
+    }
     if (typeof footer.email === 'string' && footer.email.trim()) {
       document.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
         link.href = `mailto:${footer.email.trim()}`

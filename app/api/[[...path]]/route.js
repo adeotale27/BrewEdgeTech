@@ -310,7 +310,17 @@ async function handleRoute(request, { params }) {
       await processDueSchedules(db)
       const docs = await db.collection('site_content').find({}).toArray()
       const content = {}
-      for (const d of docs) content[d.content_key] = d.published_content || {}
+      for (const d of docs) {
+        const published = d.published_content || {}
+        content[d.content_key] = d.content_key === 'demo_library' && Array.isArray(published.items)
+          ? {
+              ...published,
+              items: published.items.map((item) => item && typeof item === 'object'
+                ? { ...item, image: resolveMedia(item.image) }
+                : item),
+            }
+          : published
+      }
       return json({ content })
     }
 

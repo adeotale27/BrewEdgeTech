@@ -1,8 +1,32 @@
 (() => {
+  const seededHeroSubtitle = 'We turn ambitious ideas into thoughtful websites and digital products—designed around your business, beautifully crafted for your audience, and ready to grow with you.'
+  const refinedHeroSubtitle = 'We create considered websites and digital products that bring your business into focus—crafted for your audience, built around how you work, and ready for what’s next.'
+  const seededAboutText = 'Good technology begins before a line of code. We listen to how your business works, share ideas openly, plan carefully, and build the most practical path forward. You stay part of the process—from the first requirement to the final refinement.'
+  const refinedAboutText = 'Great digital products come from close collaboration. We take time to understand your goals and constraints, shape a clear plan, then build and refine alongside you—so every feature has a purpose and every decision stays connected to your business.'
+
   function setText(selector, value) {
     if (typeof value !== 'string' || !value.trim()) return
     const element = document.querySelector(selector)
     if (element) element.textContent = value.trim()
+  }
+
+  function setSectionHeading(selector, value) {
+    if (typeof value !== 'string' || !value.trim()) return
+    const heading = document.querySelector(selector)
+    if (!heading) return
+    const lines = value.trim().split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
+    if (lines.length < 2) {
+      heading.textContent = lines[0] || ''
+      return
+    }
+    const emphasized = document.createElement('span')
+    emphasized.className = 'grad'
+    emphasized.textContent = lines.slice(1).join(' ')
+    heading.replaceChildren(
+      document.createTextNode(lines[0]),
+      document.createElement('br'),
+      emphasized,
+    )
   }
 
   function setMeta(selector, attribute, value) {
@@ -59,9 +83,13 @@
           )
         }
       }
-      setText('.hero .lead', homepage.hero_subtitle)
-      setText('.why h2', homepage.about_title)
-      setText('.whygrid>div:last-child>p', homepage.about_text)
+      setText('.hero .lead', homepage.hero_subtitle === seededHeroSubtitle
+        ? refinedHeroSubtitle
+        : homepage.hero_subtitle)
+      setSectionHeading('.why h2', homepage.about_title)
+      setText('.whygrid>div:last-child>p', homepage.about_text === seededAboutText
+        ? refinedAboutText
+        : homepage.about_text)
 
       if (typeof seo.title === 'string' && seo.title.trim()) {
         document.title = seo.title.trim()

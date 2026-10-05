@@ -7,8 +7,19 @@ body {
   color: #172543 !important;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+}
+
 .shell {
+  max-width: 1480px;
   color: #172543;
+}
+
+.layout {
+  grid-template-columns: 238px minmax(0, 1fr);
+  gap: 22px;
 }
 
 .top {
@@ -64,6 +75,10 @@ select,
 .field input,
 .field textarea,
 .field select {
+  min-width: 0;
+  border-radius: 9px;
+  font: inherit;
+  transition: border-color .18s ease, box-shadow .18s ease;
   background: #fff !important;
   border-color: #cbd5e1 !important;
   color: #1e293b !important;
@@ -99,6 +114,56 @@ select:focus {
   background: #fff1f2 !important;
   border-color: #fecdd3 !important;
   color: #be123c !important;
+}
+
+.lead {
+  grid-template-columns:
+    minmax(155px, 1fr)
+    minmax(140px, 1fr)
+    minmax(160px, 1.2fr)
+    minmax(220px, 1.2fr)
+    auto !important;
+}
+
+.lead > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.lead input,
+.lead select {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
+.lead .btn {
+  white-space: normal;
+}
+
+@media (max-width: 1100px) {
+  .lead {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .lead > div:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .lead {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .lead > div:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .lead > .btn {
+    justify-self: stretch;
+  }
 }
 
 .status {
@@ -160,6 +225,218 @@ a {
   color: #315db7 !important;
 }
 
+.growthIntro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 0 0 16px;
+  padding: 22px 24px;
+  border: 1px solid #dce4ef;
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at 92% 0%, rgb(101 136 232 / 13%), transparent 44%),
+    #fff;
+  box-shadow: 0 5px 18px rgb(24 47 88 / 6%);
+}
+
+.adminGettingStarted {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.25fr) repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid #dce4ef;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 0 0, rgb(101 136 232 / 9%), transparent 38%),
+    #fff;
+  box-shadow: 0 5px 18px rgb(24 47 88 / 5%);
+}
+
+.adminGuideIntro {
+  align-self: center;
+  padding: 4px 10px 4px 2px;
+}
+
+.adminGuideIntro h2 {
+  margin: 6px 0;
+  color: #172543;
+  font-size: 17px;
+  letter-spacing: -.3px;
+}
+
+.adminGuideIntro p {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.adminGuideStep {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 13px 11px;
+  border: 1px solid #e5ebf4;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+.adminGuideStep > span {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  place-items: center;
+  border-radius: 9px;
+  background: #edf3ff;
+  color: #315db7;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.adminGuideStep b,
+.adminGuideStep small {
+  display: block;
+}
+
+.adminGuideStep b {
+  color: #172543;
+  font-size: 11px;
+}
+
+.adminGuideStep small {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.adminGettingStarted .adminGuideAction {
+  grid-column: 2 / -1;
+  justify-self: end;
+}
+
+.adminImageHelp {
+  margin: 0;
+}
+
+.growthIntro h2 {
+  margin: 5px 0 6px;
+  color: #172543;
+  font-size: 23px;
+}
+
+.growthIntro p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.growthEyebrow,
+.growthLabel {
+  color: #526da8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.growthGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+#growth .growthPanel {
+  min-width: 0;
+  margin: 0;
+  padding: 18px;
+  border-radius: 14px;
+}
+
+#growth .growthPanel.growthSeo,
+#growth .growthPanel.growthWide {
+  grid-column: 1 / -1;
+}
+
+#growth .growthPanel .panelhead {
+  align-items: flex-start;
+}
+
+#growth .growthPanel .panelhead h2 {
+  margin-top: 5px;
+  font-size: 17px;
+}
+
+#growth .growthPanel .panelhead p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.growthFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e7edf5;
+}
+
+.growthFoot .hint {
+  margin: 0;
+}
+
+.growthScheduleForm {
+  margin-bottom: 12px;
+}
+
+.growthScheduleForm select,
+.growthScheduleForm input,
+#growth .panelhead select {
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #1e293b;
+  font: inherit;
+  font-size: 12px;
+}
+
+.growthScheduleForm input {
+  flex: 1 1 190px;
+  min-width: 0;
+}
+
+.growthLayoutFields {
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.growthLayoutFields label {
+  min-width: 125px;
+  padding: 10px 12px;
+  border: 1px solid #dce4ef;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+#growth .project {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#growth .stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 @media (max-width: 760px) {
   .side {
     background: #fff;
@@ -179,4 +456,102 @@ a {
     background: #edf3fc !important;
     color: #18305a !important;
   }
+}
+
+@media (max-width: 900px) {
+  .growthGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .adminGettingStarted {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .adminGuideIntro {
+    grid-column: 1 / -1;
+  }
+
+  .adminGettingStarted .adminGuideAction {
+    grid-column: 1 / -1;
+  }
+
+  #growth .growthPanel.growthSeo,
+  #growth .growthPanel.growthWide {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .adminGettingStarted {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .adminGuideIntro,
+  .adminGettingStarted .adminGuideAction {
+    grid-column: auto;
+  }
+
+  .growthIntro {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px;
+  }
+
+  #growth .growthPanel {
+    padding: 14px;
+  }
+
+  #growth .growthPanel .panelhead {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #growth .growthPanel .panelhead > .row {
+    width: 100%;
+  }
+
+  #growth .growthPanel .panelhead select,
+  #growth .growthPanel .panelhead .btn {
+    flex: 1 1 auto;
+  }
+
+  .growthFoot {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+select,
+.field select,
+.growthScheduleForm select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 40px;
+  padding-right: 38px !important;
+  background-color: #fff !important;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #536789 50%),
+    linear-gradient(135deg, #536789 50%, transparent 50%) !important;
+  background-position:
+    calc(100% - 17px) 50%,
+    calc(100% - 12px) 50% !important;
+  background-size: 5px 5px, 5px 5px !important;
+  background-repeat: no-repeat !important;
+  color-scheme: light;
+  cursor: pointer;
+}
+
+select option {
+  background: #fff;
+  color: #1e293b;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.btn:focus-visible,
+.nav:focus-visible,
+.tab:focus-visible {
+  outline: 3px solid #6588e8;
+  outline-offset: 2px;
 }
